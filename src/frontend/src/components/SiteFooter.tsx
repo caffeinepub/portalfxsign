@@ -22,6 +22,10 @@ export default function SiteFooter() {
     startTransition('/privacy');
   };
 
+  const handleContactClick = () => {
+    startTransition('/telegram');
+  };
+
   return (
     <footer className="w-full border-t border-border/40 bg-muted/30">
       {/* Leadership & Companies Section */}
@@ -82,7 +86,10 @@ export default function SiteFooter() {
             >
               Privacy Policy
             </button>
-            <button className="text-muted-foreground hover:text-foreground transition-colors">
+            <button 
+              onClick={handleContactClick}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
               Contact Us
             </button>
           </div>

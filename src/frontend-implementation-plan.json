@@ -1,44 +1,21 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Standalone Privacy Policy page and footer link routing",
+  "title": "Footer Contact Us navigates to /telegram with route transition UX",
   "requirements": [
     {
-      "id": "REQ-43",
-      "summary": "Add a new standalone Privacy Policy page at `/privacy` with concise, professional English-only content.",
+      "id": "REQ-45",
+      "summary": "Wire the footer “Contact Us” action to navigate to the existing /telegram route using useRouteTransition().startTransition so the global spinner + fade-in transition remains consistent.",
       "acceptanceCriteria": [
-        "Navigating directly to `/privacy` renders a standalone Privacy Policy page (not a modal and not embedded inside another page).",
-        "Privacy Policy content is concise (shorter than the existing Terms page) while still being professionally structured with clear section headings.",
-        "All user-facing text on the Privacy Policy page is English.",
-        "No other existing pages or routes have their layouts/content changed as part of this work (except where necessary to add the new route)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/PrivacyPage.tsx",
-          "operation": "create",
-          "description": "Create a standalone Privacy Policy page component with concise, professionally structured English-only sections (e.g., Overview, Information We Collect, How We Use Information, Cookies, Data Sharing, Data Retention, Security, Your Choices, Children's Privacy, International Transfers, Contact, Updates). Keep the total content shorter than frontend/src/pages/TermsPage.tsx while maintaining clear headings and readable layout consistent with the site."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register the new `/privacy` route in the TanStack Router route tree by importing PrivacyPage and adding a corresponding createRoute entry, ensuring existing routes and layout remain unchanged."
-        }
-      ]
-    },
-    {
-      "id": "REQ-44",
-      "summary": "Wire the footer 'Privacy Policy' link to navigate to `/privacy` using the existing route-transition overlay UX.",
-      "acceptanceCriteria": [
-        "Clicking \"Privacy Policy\" in the footer triggers the same route-transition overlay behavior used elsewhere (brief spinner, then route changes).",
-        "After the transition, the app URL is `/privacy` and the Privacy Policy page content renders.",
-        "The existing \"Terms & Conditions\" footer link continues to work and still navigates to `/terms` with the same transition behavior.",
-        "No footer links are left non-functional on mobile or desktop."
+        "In the site footer, clicking the “Contact Us” button navigates to `/telegram` (URL changes and the Telegram page renders).",
+        "The navigation uses the existing route-transition behavior (spinner overlay appears briefly, then destination page fades in).",
+        "The existing footer links (“Terms & Conditions”, “Privacy Policy”) continue to work as-is and are not broken by the change."
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/SiteFooter.tsx",
           "operation": "modify",
-          "description": "Update the existing footer 'Privacy Policy' button to call the existing useRouteTransition().startTransition('/privacy') (matching the Terms behavior), without altering other footer links or changing the global transition timing/behavior."
+          "description": "Add a Contact Us click handler that calls useRouteTransition().startTransition('/telegram') and wire it to the existing “Contact Us” button; keep Terms & Conditions and Privacy Policy handlers unchanged."
         }
       ]
     }

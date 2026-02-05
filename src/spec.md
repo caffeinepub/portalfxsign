@@ -1,11 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Add a concise, standalone Privacy Policy page and ensure the footer “Privacy Policy” link navigates to it using the existing route-transition experience.
+**Goal:** Make the footer “Contact Us” action navigate to the site’s standalone Telegram page.
 
 **Planned changes:**
-- Create a new standalone page/route at `/privacy` containing concise, professionally structured Privacy Policy content in English (with clear section headings).
-- Update the existing footer “Privacy Policy” link to navigate to `/privacy` using the app’s existing global route-transition UX (spinner + fade-in), without affecting other links.
-- Verify the existing “Terms & Conditions” link continues to navigate to `/terms` with the same transition behavior.
+- Update the footer “Contact Us” click handler to navigate to the `/telegram` route.
+- Use the existing global route-transition UX by triggering navigation via `useRouteTransition().startTransition(...)`.
+- Ensure existing footer links (“Terms & Conditions”, “Privacy Policy”) continue to work unchanged.
 
-**User-visible outcome:** Users can click “Privacy Policy” in the site footer (or visit `/privacy` directly) to view a concise Privacy Policy page, with the same transition experience as other routes.
+**User-visible outcome:** Clicking “Contact Us” in the site footer takes the user to `/telegram`, showing the standard transition spinner overlay and fade-in.

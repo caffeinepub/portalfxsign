@@ -1,63 +1,41 @@
 {
   "kind": "build_request",
-  "title": "Add standalone Privacy Policy page and wire footer link to /privacy",
+  "title": "Redirect footer “Contact Us” to the Telegram page",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-43",
-      "text": "Create a new standalone Privacy Policy page at route `/privacy` with concise, professional Privacy Policy content appropriate for the TelsFX site, and keep all user-facing text in English.",
+      "id": "REQ-45",
+      "text": "Update the footer “Contact Us” action at the bottom of the site so that clicking it navigates to the standalone Telegram route (`/telegram`) using the existing global route-transition UX (`startTransition`).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-2",
-          "msg-4",
           "msg-5",
-          "msg-6"
+          "msg-6",
+          "msg-7",
+          "msg-8"
         ],
         "quotes": [
-          "When the user click on the privacy policy it should open a new stand alone page and in that page fill in some privacy policies that you recommend for the site for me.",
-          "Yes but not too long keeping every other thing intact",
-          "Yes"
+          "Can you redirectly user to the telegram page when user click on contacts us",
+          "The contact us at the bottum",
+          "Build"
         ]
       },
       "acceptanceCriteria": [
-        "Navigating directly to `/privacy` renders a standalone Privacy Policy page (not a modal and not embedded inside another page).",
-        "Privacy Policy content is concise (shorter than the existing Terms page) while still being professionally structured with clear section headings.",
-        "All user-facing text on the Privacy Policy page is English.",
-        "No other existing pages or routes have their layouts/content changed as part of this work (except where necessary to add the new route)."
-      ]
-    },
-    {
-      "id": "REQ-44",
-      "text": "Wire the existing site footer \"Privacy Policy\" link to navigate to `/privacy` using the existing global route-transition UX (spinner + fade-in), without breaking any other footer links or existing navigation behavior.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-3",
-          "msg-5"
-        ],
-        "quotes": [
-          "Should the footer’s existing “Privacy Policy” link be wired to this new standalone page using the same global spinner + fade‑in transition as Terms?",
-          "Yes"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Clicking \"Privacy Policy\" in the footer triggers the same route-transition overlay behavior used elsewhere (brief spinner, then route changes).",
-        "After the transition, the app URL is `/privacy` and the Privacy Policy page content renders.",
-        "The existing \"Terms & Conditions\" footer link continues to work and still navigates to `/terms` with the same transition behavior.",
-        "No footer links are left non-functional on mobile or desktop."
+        "In the site footer, clicking the “Contact Us” button navigates to `/telegram` (URL changes and the Telegram page renders).",
+        "The navigation uses the existing route-transition behavior (spinner overlay appears briefly, then destination page fades in).",
+        "The existing footer links (“Terms & Conditions”, “Privacy Policy”) continue to work as-is and are not broken by the change."
       ]
     }
   ],
   "constraints": [
-    "Keep every other part of the site intact aside from adding the new `/privacy` page and wiring the existing footer Privacy Policy link to it.",
-    "All user-facing text introduced or modified by this change must be in English.",
-    "Do not edit any files under `frontend/src/components/ui` or other immutable paths listed in SYSTEM_CONTEXT."
+    "Do not modify any files under the frontend immutable paths listed in SYSTEM_CONTEXT.",
+    "Keep all user-facing text in English.",
+    "Use the existing TanStack Router navigation pattern via `useRouteTransition().startTransition(...)` so the global spinner + fade-in behavior remains consistent."
   ],
   "nonGoals": [
-    "Do not change the existing global route-transition timing/behavior beyond reusing it for the footer Privacy Policy link.",
-    "Do not add the Privacy Policy link to the public header/navigation (footer wiring only).",
-    "Do not add backend storage or APIs related to privacy policies."
+    "Do not add a new Contact Us page or contact form.",
+    "Do not change the Telegram page content or the external Telegram destination URL behavior.",
+    "Do not change header navigation, plan flows, or any other footer layout/content beyond wiring the existing “Contact Us” click action."
   ],
   "imageRequirements": {
     "required": [],
@@ -66,9 +44,7 @@
   "userProfileUpdate": {
     "goalsToAdd": [],
     "goalsToRemove": [],
-    "preferencesToAdd": [
-      "Prefer concise legal pages (Privacy Policy) while keeping the rest of the site unchanged."
-    ],
+    "preferencesToAdd": [],
     "preferencesToRemove": [],
     "miscToAdd": [],
     "miscToRemove": [],

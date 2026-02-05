@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 27,
+  "projectStateVersion": 29,
   "summary": "Add owner-only user account viewing (admin II login) + dynamic “thousands of users” counter, remove the “Built with Caffeine” footer text/emoji, and add standalone Terms & Conditions and Privacy Policy pages that the footer links correctly navigate to, keeping everything else intact.",
   "architectural_notes": [
     "Include explicit disclaimers to avoid implying official Tesla affiliation/endorsement.",
@@ -360,6 +360,14 @@
         "REQ-44"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-update-the-footer-contact-us-action-at-the-bottom-of-the-site-so-that-clicking-it-navigates-to-the-standalone-telegram-route-telegram-using-the-existing-global-route-transition-ux-starttransition",
+      "title": "Update the footer “Contact Us” action at the bottom of the site so that clicking it navigates to the standalone Telegram route (`/telegram`) using the existing global route-transition UX (`startTransition`).",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -496,6 +504,12 @@
     {
       "id": "AR-27",
       "summary": "Create a concise standalone Privacy Policy page at route `/privacy` with recommended professional privacy policy content, and wire the existing footer “Privacy Policy” link to navigate to `/privacy` using the existing global spinner + fade-in transition, keeping everything else intact.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-28",
+      "summary": "Wire the footer “Contact Us” link (bottom of page) to redirect/navigate users to the Telegram page (standalone Telegram CTA at `/telegram` / Telegram destination) when clicked, using the existing navigation transition behavior.",
       "reqIds": [],
       "status": "pending"
     }
