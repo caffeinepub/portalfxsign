@@ -1,0 +1,78 @@
+{
+  "kind": "build_request",
+  "title": "Add standalone Privacy Policy page and wire footer link to /privacy",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-43",
+      "text": "Create a new standalone Privacy Policy page at route `/privacy` with concise, professional Privacy Policy content appropriate for the TelsFX site, and keep all user-facing text in English.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-2",
+          "msg-4",
+          "msg-5",
+          "msg-6"
+        ],
+        "quotes": [
+          "When the user click on the privacy policy it should open a new stand alone page and in that page fill in some privacy policies that you recommend for the site for me.",
+          "Yes but not too long keeping every other thing intact",
+          "Yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Navigating directly to `/privacy` renders a standalone Privacy Policy page (not a modal and not embedded inside another page).",
+        "Privacy Policy content is concise (shorter than the existing Terms page) while still being professionally structured with clear section headings.",
+        "All user-facing text on the Privacy Policy page is English.",
+        "No other existing pages or routes have their layouts/content changed as part of this work (except where necessary to add the new route)."
+      ]
+    },
+    {
+      "id": "REQ-44",
+      "text": "Wire the existing site footer \"Privacy Policy\" link to navigate to `/privacy` using the existing global route-transition UX (spinner + fade-in), without breaking any other footer links or existing navigation behavior.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3",
+          "msg-5"
+        ],
+        "quotes": [
+          "Should the footer’s existing “Privacy Policy” link be wired to this new standalone page using the same global spinner + fade‑in transition as Terms?",
+          "Yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Clicking \"Privacy Policy\" in the footer triggers the same route-transition overlay behavior used elsewhere (brief spinner, then route changes).",
+        "After the transition, the app URL is `/privacy` and the Privacy Policy page content renders.",
+        "The existing \"Terms & Conditions\" footer link continues to work and still navigates to `/terms` with the same transition behavior.",
+        "No footer links are left non-functional on mobile or desktop."
+      ]
+    }
+  ],
+  "constraints": [
+    "Keep every other part of the site intact aside from adding the new `/privacy` page and wiring the existing footer Privacy Policy link to it.",
+    "All user-facing text introduced or modified by this change must be in English.",
+    "Do not edit any files under `frontend/src/components/ui` or other immutable paths listed in SYSTEM_CONTEXT."
+  ],
+  "nonGoals": [
+    "Do not change the existing global route-transition timing/behavior beyond reusing it for the footer Privacy Policy link.",
+    "Do not add the Privacy Policy link to the public header/navigation (footer wiring only).",
+    "Do not add backend storage or APIs related to privacy policies."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [
+      "Prefer concise legal pages (Privacy Policy) while keeping the rest of the site unchanged."
+    ],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}
