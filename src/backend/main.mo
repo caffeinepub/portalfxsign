@@ -1,15 +1,11 @@
 import Map "mo:core/Map";
 import Runtime "mo:core/Runtime";
-import Iter "mo:core/Iter";
-import Nat "mo:core/Nat";
 import Text "mo:core/Text";
 import Time "mo:core/Time";
 import Principal "mo:core/Principal";
 
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
-
-// Apply migration on upgrade
 
 actor {
   // Initialize the admin-only role-based access control state
@@ -37,6 +33,11 @@ actor {
   let userProfiles = Map.empty<Principal, UserProfile>();
 
   public shared ({ caller }) func createAccount(name : Text, email : Text, password : Text, planId : ?Text) : async Text {
+    // Require at least user permission to create accounts
+    if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
+      Runtime.trap("Unauthorized: Only authenticated users can create accounts");
+    };
+
     let accountName = name.trim(#predicate(func(c) { c == ' ' }));
     let accountEmail = email.trim(#predicate(func(c) { c == ' ' }));
 
@@ -68,6 +69,10 @@ actor {
   public query ({ caller }) func getAccountStatistics() : async {
     totalAccounts : Nat;
   } {
+    // Require admin permission to view account statistics
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admins can view account statistics");
+    };
     {
       totalAccounts = accounts.size();
     };

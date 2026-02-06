@@ -1,5 +1,5 @@
 {
-  "frontend/src/App.tsx": "Main application component with TanStack Router setup including all existing routes plus the new /privacy route for the Privacy Policy page.",
+  "frontend/src/App.tsx": "Main application component with TanStack Router setup including all existing routes plus the new /admin-help route for admin setup instructions.",
   "frontend/src/pages/LandingPage.tsx": "Landing page with hero section, mission statement, get-started form, and new UsersWorldwideKpi component displaying dynamic user count.",
   "frontend/src/pages/AccessPlansPage.tsx": "Access plans page with three clickable partnership tier cards that trigger global route transitions when selected; Select buttons now properly call handlePlanSelect while stopping event propagation to prevent double-firing.",
   "frontend/src/pages/ProductsPage.tsx": "Vertically scrollable products page showcasing six Tesla-related product categories with educational descriptions and all disclaimer text removed.",
@@ -19,10 +19,11 @@
   "frontend/index.html": "HTML entry point with updated document title from \"Portalfxsign\" to \"TelsFX\".",
   "frontend/src/hooks/useRouteTransition.tsx": "Context provider and hook for managing global route transitions with a ~100ms loading spinner overlay before navigation, now with proper router context access via useNavigate, error handling, and timer cleanup to prevent race conditions and ensure overlay always clears.",
   "frontend/src/components/RouteTransitionOverlay.tsx": "Full-screen overlay component that displays a circular loading spinner during route transitions.",
-  "frontend/src/config/admin.ts": "Configuration file containing the admin Principal ID constant for authorization checks.",
-  "frontend/src/components/AdminAccessGate.tsx": "Authorization wrapper component that gates admin-only content by checking Internet Identity authentication and admin status, showing appropriate login or access-denied states.",
+  "frontend/src/config/admin.ts": "Configuration file containing the admin Principal ID constant with enhanced English comments explaining where to find the Principal (https://id.ai/manage) and that it must match the value shown on the Access Denied screen.",
+  "frontend/src/components/AdminAccessGate.tsx": "Authorization wrapper component that gates admin-only content, now correctly uses startTransition from useRouteTransition hook, displays the authenticated user's Principal with copy functionality on access denial, includes English instructions referencing the config file location, and provides an in-app navigation button to /admin-help using route transitions.",
   "frontend/src/components/UsersWorldwideKpi.tsx": "KPI component displaying an animated upward-counting user count (starting from thousands) with professional styling and icon.",
-  "frontend/src/pages/AdminUsersPage.tsx": "Admin-only page displaying all registered user accounts in a table format with loading, empty, and error states, protected by AdminAccessGate.",
+  "frontend/src/pages/AdminUsersPage.tsx": "Admin-only page displaying all registered user accounts in a table format with loading, empty, and error states, protected by AdminAccessGate, now includes a privacy notice indicating sensitive fields are never displayed.",
   "frontend/src/pages/TermsPage.tsx": "Standalone Terms & Conditions page with comprehensive professional legal content in English, styled with GreenSectionCard and ScrollArea components to match the site's visual theme.",
-  "frontend/src/pages/PrivacyPage.tsx": "Standalone Privacy Policy page with concise professional English-only content covering data collection, usage, sharing, security, user rights, and contact information, styled with GreenSectionCard and ScrollArea to match the site's visual theme."
+  "frontend/src/pages/PrivacyPage.tsx": "Standalone Privacy Policy page with concise professional English-only content covering data collection, usage, sharing, security, user rights, and contact information, styled with GreenSectionCard and ScrollArea to match the site's visual theme.",
+  "frontend/src/pages/AdminHelpPage.tsx": "Professional help page with step-by-step English instructions for accessing admin features using Internet Identity, including a visible external link to https://id.ai/manage and clear guidance on configuring the admin Principal."
 }

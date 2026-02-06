@@ -1,21 +1,81 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Footer Contact Us navigates to /telegram with route transition UX",
+  "title": "Admin help route and clearer Internet Identity principal visibility for admin access",
   "requirements": [
     {
-      "id": "REQ-45",
-      "summary": "Wire the footer “Contact Us” action to navigate to the existing /telegram route using useRouteTransition().startTransition so the global spinner + fade-in transition remains consistent.",
+      "id": "REQ-46",
+      "summary": "Add a private admin-help route with English Internet Identity instructions and a visible link to the Internet Identity management page.",
       "acceptanceCriteria": [
-        "In the site footer, clicking the “Contact Us” button navigates to `/telegram` (URL changes and the Telegram page renders).",
-        "The navigation uses the existing route-transition behavior (spinner overlay appears briefly, then destination page fades in).",
-        "The existing footer links (“Terms & Conditions”, “Privacy Policy”) continue to work as-is and are not broken by the change."
+        "A new route exists (not linked from the public header) that displays a professional help page for the owner/admin explaining how to access the admin-only user list using Internet Identity.",
+        "The page includes a clearly visible external link to https://id.ai/manage (or the configured Internet Identity provider URL if already present in configuration).",
+        "All user-facing text on this page is in English.",
+        "Navigating to this page uses the existing global route-transition UX (spinner + fade-in)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/SiteFooter.tsx",
+          "path": "frontend/src/pages/AdminHelpPage.tsx",
+          "operation": "create",
+          "description": "Create an English-only admin help page that explains how to (1) log in with Internet Identity, (2) find/copy the authenticated Principal, and (3) set it as the configured admin principal; include a clearly visible external link to https://id.ai/manage (or the configured provider URL if the app already exposes one). Use shadcn-ui components (e.g., Button) for consistent styling; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Add a Contact Us click handler that calls useRouteTransition().startTransition('/telegram') and wire it to the existing “Contact Us” button; keep Terms & Conditions and Privacy Policy handlers unchanged."
+          "description": "Register a new private route (e.g., /admin-help) pointing to AdminHelpPage, ensuring it participates in existing layout fade-in behavior and is not added to public header navigation."
+        },
+        {
+          "path": "frontend/src/components/AdminAccessGate.tsx",
+          "operation": "modify",
+          "description": "Add an in-app navigation action (button) to the new /admin-help route using the existing route-transition system so navigation shows the spinner + fade-in; do not add any public header link. Use shadcn-ui Button for the action; verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-47",
+      "summary": "Enhance the admin access denied UI to show the authenticated Principal and clear English instructions for configuring the admin Principal.",
+      "acceptanceCriteria": [
+        "When a user is authenticated but not an admin, the Access Denied view shows the user’s current Principal as text (e.g., \"Your Principal: …\").",
+        "The Access Denied view includes English instructions telling the owner where the admin Principal is configured (frontend config) and that it must match the shown Principal.",
+        "If the identity is not available, the UI does not crash and does not display a misleading principal value.",
+        "The Admin Login flow and denial screen continue to participate in the existing global route-transition UX for any in-app navigation actions."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/AdminAccessGate.tsx",
+          "operation": "modify",
+          "description": "Update the authenticated-but-not-admin view to (1) safely derive and display identity.getPrincipal().toString() only when available, (2) show English instructions that the admin principal is configured in frontend/src/config/admin.ts and must match the shown Principal, and (3) provide an in-app button to /admin-help using the existing route-transition UX. Use shadcn-ui components (e.g., Button) for consistent UI; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/config/admin.ts",
+          "operation": "modify",
+          "description": "Clarify English comments/documentation around ADMIN_PRINCIPAL so it explicitly references that the value must match the authenticated Internet Identity Principal shown on the Access Denied screen and/or Admin Help page."
+        }
+      ]
+    },
+    {
+      "id": "REQ-48",
+      "summary": "Keep the admin user list page available as the private destination for stored accounts and ensure the UI remains protected and avoids displaying sensitive fields.",
+      "acceptanceCriteria": [
+        "The admin-only user list route (e.g., /users) remains protected so anonymous users are prompted to log in and non-admin authenticated users are denied.",
+        "After successful signup flows already in the app, created accounts continue to be persisted in the backend and appear in the admin user list (name + email at minimum).",
+        "The backend admin-only listing API continues to reject non-admin callers.",
+        "The admin user list UI does not display sensitive fields (e.g., passwords) even if the backend record contains them."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/AdminUsersPage.tsx",
+          "operation": "modify",
+          "description": "Confirm the user list UI displays only non-sensitive fields (fullName, email, planId, created) and does not render passwordHash or other sensitive fields; optionally add a brief English note in the page UI indicating sensitive fields are never shown."
+        },
+        {
+          "path": "frontend/src/components/AdminAccessGate.tsx",
+          "operation": "modify",
+          "description": "Ensure the protected /users route continues to prompt login for anonymous users and shows a clear denial state for non-admins without breaking route transition behavior for any in-app navigation actions. Use shadcn-ui Button where actions are provided; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Verify the existing /users route remains registered and unchanged in visibility (not added to public header), and that /users continues to render the protected AdminUsersPage under the existing global layout."
         }
       ]
     }

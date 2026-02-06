@@ -1,34 +1,71 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-05T19:05:14.106Z",
+  "generatedAt": "2026-02-06T10:57:52.617Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 1,
-    "implemented": 1,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-45",
-        "summary": "Update the footer “Contact Us” action at the bottom of the site so that clicking it navigates to the standalone Telegram route (`/telegram`) using the existing global route-transition UX (`startTransition`).",
+        "id": "REQ-46",
+        "summary": "Add a new admin-help page/route that explains how the website owner can access the admin-only user information using Internet Identity, including a clear link to the Internet Identity management page and step-by-step instructions in English.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/SiteFooter.tsx"
+          "frontend/src/pages/AdminHelpPage.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/components/AdminAccessGate.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/SiteFooter.tsx"
+          "frontend/src/pages/AdminHelpPage.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/components/AdminAccessGate.tsx"
+        ]
+      },
+      {
+        "id": "REQ-47",
+        "summary": "Update the admin access gating UI so that when a logged-in user is denied admin access, the page displays the currently authenticated Internet Identity Principal and clear instructions that the website owner must set this Principal as the configured admin Principal for access.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/AdminAccessGate.tsx",
+          "frontend/src/config/admin.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/AdminAccessGate.tsx",
+          "frontend/src/config/admin.ts"
+        ]
+      },
+      {
+        "id": "REQ-48",
+        "summary": "Ensure the owner-only admin page for viewing stored user accounts remains available as the private destination for submitted user information, and ensure it is accessible only after Internet Identity login and admin authorization.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/AdminUsersPage.tsx",
+          "frontend/src/components/AdminAccessGate.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/AdminUsersPage.tsx",
+          "frontend/src/components/AdminAccessGate.tsx",
+          "frontend/src/App.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/SiteFooter.tsx",
+    "frontend/src/App.tsx",
+    "frontend/src/components/AdminAccessGate.tsx",
+    "frontend/src/config/admin.ts",
+    "frontend/src/pages/AdminHelpPage.tsx",
+    "frontend/src/pages/AdminUsersPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

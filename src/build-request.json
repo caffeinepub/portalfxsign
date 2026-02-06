@@ -1,41 +1,78 @@
 {
   "kind": "build_request",
-  "title": "Redirect footer “Contact Us” to the Telegram page",
+  "title": "Improve admin access to the stored user information (Internet Identity help + principal visibility)",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-45",
-      "text": "Update the footer “Contact Us” action at the bottom of the site so that clicking it navigates to the standalone Telegram route (`/telegram`) using the existing global route-transition UX (`startTransition`).",
+      "id": "REQ-46",
+      "text": "Add a new admin-help page/route that explains how the website owner can access the admin-only user information using Internet Identity, including a clear link to the Internet Identity management page and step-by-step instructions in English.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5",
-          "msg-6",
-          "msg-7",
-          "msg-8"
+          "msg-1"
         ],
         "quotes": [
-          "Can you redirectly user to the telegram page when user click on contacts us",
-          "The contact us at the bottum",
-          "Build"
+          "Okay, then all user's information should be forwarded to create another site that can be accessed by the admin alone from here. Then all the information should be forwarded to that site. Then you should give me access to the site"
         ]
       },
       "acceptanceCriteria": [
-        "In the site footer, clicking the “Contact Us” button navigates to `/telegram` (URL changes and the Telegram page renders).",
-        "The navigation uses the existing route-transition behavior (spinner overlay appears briefly, then destination page fades in).",
-        "The existing footer links (“Terms & Conditions”, “Privacy Policy”) continue to work as-is and are not broken by the change."
+        "A new route exists (not linked from the public header) that displays a professional help page for the owner/admin explaining how to access the admin-only user list using Internet Identity.",
+        "The page includes a clearly visible external link to https://id.ai/manage (or the configured Internet Identity provider URL if already present in configuration).",
+        "All user-facing text on this page is in English.",
+        "Navigating to this page uses the existing global route-transition UX (spinner + fade-in)."
+      ]
+    },
+    {
+      "id": "REQ-47",
+      "text": "Update the admin access gating UI so that when a logged-in user is denied admin access, the page displays the currently authenticated Internet Identity Principal and clear instructions that the website owner must set this Principal as the configured admin Principal for access.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "I cannot access them due to my own enablement of being able to access my internet ID. I don't know what that is. I don't know how to access that."
+        ]
+      },
+      "acceptanceCriteria": [
+        "When a user is authenticated but not an admin, the Access Denied view shows the user’s current Principal as text (e.g., \"Your Principal: …\").",
+        "The Access Denied view includes English instructions telling the owner where the admin Principal is configured (frontend config) and that it must match the shown Principal.",
+        "If the identity is not available, the UI does not crash and does not display a misleading principal value.",
+        "The Admin Login flow and denial screen continue to participate in the existing global route-transition UX for any in-app navigation actions."
+      ]
+    },
+    {
+      "id": "REQ-48",
+      "text": "Ensure the owner-only admin page for viewing stored user accounts remains available as the private destination for submitted user information, and ensure it is accessible only after Internet Identity login and admin authorization.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "create another site that can be accessed by the admin alone from here. Then all the information should be forwarded to that site."
+        ]
+      },
+      "acceptanceCriteria": [
+        "The admin-only user list route (e.g., /users) remains protected so anonymous users are prompted to log in and non-admin authenticated users are denied.",
+        "After successful signup flows already in the app, created accounts continue to be persisted in the backend and appear in the admin user list (name + email at minimum).",
+        "The backend admin-only listing API continues to reject non-admin callers.",
+        "The admin user list UI does not display sensitive fields (e.g., passwords) even if the backend record contains them."
       ]
     }
   ],
   "constraints": [
-    "Do not modify any files under the frontend immutable paths listed in SYSTEM_CONTEXT.",
-    "Keep all user-facing text in English.",
-    "Use the existing TanStack Router navigation pattern via `useRouteTransition().startTransition(...)` so the global spinner + fade-in behavior remains consistent."
+    "Use English for all user-facing text.",
+    "Do not implement automatic forwarding of user-entered data to Telegram, email, or any external service.",
+    "Do not add admin-only pages to the public header/navigation.",
+    "Do not edit files under frontend/src/components/ui, frontend/src/main.tsx, frontend/src/hooks/useInternetIdentity.ts(x), or frontend/src/hooks/useActor.ts.",
+    "Backend must remain a single Motoko actor in backend/main.mo; add migration only if state changes require it."
   ],
   "nonGoals": [
-    "Do not add a new Contact Us page or contact form.",
-    "Do not change the Telegram page content or the external Telegram destination URL behavior.",
-    "Do not change header navigation, plan flows, or any other footer layout/content beyond wiring the existing “Contact Us” click action."
+    "Collecting SSN or forwarding SSN/passwords to Telegram/email.",
+    "Replacing the existing public signup/plan flow with a new multi-step SSN-based flow.",
+    "Adding third-party authentication beyond Internet Identity.",
+    "Adding external databases or external admin dashboards hosted outside this app."
   ],
   "imageRequirements": {
     "required": [],

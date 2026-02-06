@@ -7,6 +7,7 @@ import PlanSuccessPage from './pages/PlanSuccessPage';
 import PlanTelegramPage from './pages/PlanTelegramPage';
 import TelegramPage from './pages/TelegramPage';
 import AdminUsersPage from './pages/AdminUsersPage';
+import AdminHelpPage from './pages/AdminHelpPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import SiteHeader from './components/SiteHeader';
@@ -90,6 +91,12 @@ const usersRoute = createRoute({
   component: AdminUsersPage,
 });
 
+const adminHelpRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin-help',
+  component: AdminHelpPage,
+});
+
 const termsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/terms',
@@ -112,6 +119,7 @@ const routeTree = rootRoute.addChildren([
   planTelegramRoute,
   telegramRoute,
   usersRoute,
+  adminHelpRoute,
   termsRoute,
   privacyRoute,
 ]);
