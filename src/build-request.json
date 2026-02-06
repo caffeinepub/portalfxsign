@@ -1,81 +1,65 @@
 {
   "kind": "build_request",
-  "title": "Improve admin access to the stored user information (Internet Identity help + principal visibility)",
+  "title": "Replace dual green gradients with pronounced global green-to-teal vector abstract background",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-46",
-      "text": "Add a new admin-help page/route that explains how the website owner can access the admin-only user information using Internet Identity, including a clear link to the Internet Identity management page and step-by-step instructions in English.",
+      "id": "REQ-93",
+      "text": "Generate a new vector-based abstract background design that transitions from green to teal and is visually pronounced.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-4",
+          "msg-5"
         ],
         "quotes": [
-          "Okay, then all user's information should be forwarded to create another site that can be accessed by the admin alone from here. Then all the information should be forwarded to that site. Then you should give me access to the site"
+          "Create an vector-based abstract background design that gradually transitions from green to a color that looks best and it's should be added to all the pages in the website.",
+          "Teal will be okay and it's should replace the existence dual green gradient because I didn't like it and it's should be more visually pronounced."
         ]
       },
       "acceptanceCriteria": [
-        "A new route exists (not linked from the public header) that displays a professional help page for the owner/admin explaining how to access the admin-only user list using Internet Identity.",
-        "The page includes a clearly visible external link to https://id.ai/manage (or the configured Internet Identity provider URL if already present in configuration).",
-        "All user-facing text on this page is in English.",
-        "Navigating to this page uses the existing global route-transition UX (spinner + fade-in)."
+        "A new vector background asset (SVG) exists under `frontend/public/assets/generated/` and visually transitions from green to teal with prominent abstract shapes.",
+        "The background is original and does not use any third-party branding, logos, or copyrighted artwork."
       ]
     },
     {
-      "id": "REQ-47",
-      "text": "Update the admin access gating UI so that when a logged-in user is denied admin access, the page displays the currently authenticated Internet Identity Principal and clear instructions that the website owner must set this Principal as the configured admin Principal for access.",
+      "id": "REQ-94",
+      "text": "Replace the existing global dual-layer green gradient background (currently applied via the `gradient-bg-right` class and its `::before/::after` layers) with the new green-to-teal vector background, and apply it globally across all routes/pages from a single global place (global CSS and/or the root layout container).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-4",
+          "msg-5",
+          "msg-6"
         ],
         "quotes": [
-          "I cannot access them due to my own enablement of being able to access my internet ID. I don't know what that is. I don't know how to access that."
+          "Create an vector-based abstract background design that gradually transitions from green to a color that looks best and it's should be added to all the pages in the website.",
+          "Teal will be okay and it's should replace the existence dual green gradient because I didn't like it and it's should be more visually pronounced.",
+          "Proceed"
         ]
       },
       "acceptanceCriteria": [
-        "When a user is authenticated but not an admin, the Access Denied view shows the user’s current Principal as text (e.g., \"Your Principal: …\").",
-        "The Access Denied view includes English instructions telling the owner where the admin Principal is configured (frontend config) and that it must match the shown Principal.",
-        "If the identity is not available, the UI does not crash and does not display a misleading principal value.",
-        "The Admin Login flow and denial screen continue to participate in the existing global route-transition UX for any in-app navigation actions."
-      ]
-    },
-    {
-      "id": "REQ-48",
-      "text": "Ensure the owner-only admin page for viewing stored user accounts remains available as the private destination for submitted user information, and ensure it is accessible only after Internet Identity login and admin authorization.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "create another site that can be accessed by the admin alone from here. Then all the information should be forwarded to that site."
-        ]
-      },
-      "acceptanceCriteria": [
-        "The admin-only user list route (e.g., /users) remains protected so anonymous users are prompted to log in and non-admin authenticated users are denied.",
-        "After successful signup flows already in the app, created accounts continue to be persisted in the backend and appear in the admin user list (name + email at minimum).",
-        "The backend admin-only listing API continues to reject non-admin callers.",
-        "The admin user list UI does not display sensitive fields (e.g., passwords) even if the backend record contains them."
+        "The previous dual-gradient effect is no longer visible anywhere in the app (no remaining `::before/::after` radial gradient layers for `gradient-bg-right`).",
+        "All pages/routes show the new vector green-to-teal background consistently, without per-page modifications.",
+        "Foreground content (header, pages, footer, cards) remains readable and layered above the background (no interference with clicks/scrolling).",
+        "No existing routes, navigation behavior, or route-transition spinner/fade behavior is changed by this background update."
       ]
     }
   ],
   "constraints": [
-    "Use English for all user-facing text.",
-    "Do not implement automatic forwarding of user-entered data to Telegram, email, or any external service.",
-    "Do not add admin-only pages to the public header/navigation.",
-    "Do not edit files under frontend/src/components/ui, frontend/src/main.tsx, frontend/src/hooks/useInternetIdentity.ts(x), or frontend/src/hooks/useActor.ts.",
-    "Backend must remain a single Motoko actor in backend/main.mo; add migration only if state changes require it."
+    "Apply the new background globally from a single shared location (global stylesheet and/or root layout), not via per-page styling changes.",
+    "Replace (do not layer on top of) the existing dual green gradients currently implemented via the `gradient-bg-right` class.",
+    "Keep all existing routes, layouts, and route-transition UX behavior intact."
   ],
   "nonGoals": [
-    "Collecting SSN or forwarding SSN/passwords to Telegram/email.",
-    "Replacing the existing public signup/plan flow with a new multi-step SSN-based flow.",
-    "Adding third-party authentication beyond Internet Identity.",
-    "Adding external databases or external admin dashboards hosted outside this app."
+    "Do not redesign page layouts, typography, or component structure beyond what is necessary to apply the new global background.",
+    "Do not add any new navigation items or routes as part of this change.",
+    "Do not modify backend canister logic."
   ],
   "imageRequirements": {
-    "required": [],
+    "required": [
+      "Abstract vector background with prominent flowing geometric layers, green-to-teal gradient (telsfx-abstract-bg.dim_1920x1080.svg)"
+    ],
     "edits": []
   },
   "userProfileUpdate": {

@@ -22,6 +22,15 @@ export const Account = IDL.Record({
   'email' : IDL.Text,
   'passwordHash' : IDL.Text,
 });
+export const UserLoginResponse = IDL.Variant({
+  'failure' : IDL.Text,
+  'success' : IDL.Opt(IDL.Text),
+});
+export const SessionToken = IDL.Nat;
+export const AdminLoginResponse = IDL.Variant({
+  'failure' : IDL.Text,
+  'success' : SessionToken,
+});
 
 export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
@@ -43,9 +52,17 @@ export const idlService = IDL.Service({
       [IDL.Opt(UserProfile)],
       ['query'],
     ),
+  'healthCheck' : IDL.Func(
+      [],
+      [IDL.Record({ 'status' : IDL.Text, 'timestamp' : Time })],
+      ['query'],
+    ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'listAllAccounts' : IDL.Func([], [IDL.Vec(Account)], ['query']),
+  'login' : IDL.Func([IDL.Text, IDL.Text], [UserLoginResponse], []),
+  'loginAdmin' : IDL.Func([IDL.Text, IDL.Text], [AdminLoginResponse], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'validateAdminSession' : IDL.Func([SessionToken], [IDL.Bool], []),
 });
 
 export const idlInitArgs = [];
@@ -64,6 +81,15 @@ export const idlFactory = ({ IDL }) => {
     'fullName' : IDL.Text,
     'email' : IDL.Text,
     'passwordHash' : IDL.Text,
+  });
+  const UserLoginResponse = IDL.Variant({
+    'failure' : IDL.Text,
+    'success' : IDL.Opt(IDL.Text),
+  });
+  const SessionToken = IDL.Nat;
+  const AdminLoginResponse = IDL.Variant({
+    'failure' : IDL.Text,
+    'success' : SessionToken,
   });
   
   return IDL.Service({
@@ -86,9 +112,17 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Opt(UserProfile)],
         ['query'],
       ),
+    'healthCheck' : IDL.Func(
+        [],
+        [IDL.Record({ 'status' : IDL.Text, 'timestamp' : Time })],
+        ['query'],
+      ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'listAllAccounts' : IDL.Func([], [IDL.Vec(Account)], ['query']),
+    'login' : IDL.Func([IDL.Text, IDL.Text], [UserLoginResponse], []),
+    'loginAdmin' : IDL.Func([IDL.Text, IDL.Text], [AdminLoginResponse], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'validateAdminSession' : IDL.Func([SessionToken], [IDL.Bool], []),
   });
 };
 

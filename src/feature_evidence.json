@@ -2,13 +2,9 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-new-admin-help-page-route-that-explains-how-the-website-owner-can-access-the-admin-only-user-information-using-internet-identity-including-a-clear-link-to-the-internet-identity-management-page-and-step-by-step-instructions-in-english",
-      "featureTitle": "Add a new admin-help page/route that explains how the website owner can access the admin-only user information using Internet Identity, including a clear link to the Internet Identity management page and step-by-step instructions in English.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/AdminAccessGate.tsx",
-        "frontend/src/pages/AdminHelpPage.tsx"
-      ],
+      "featureId": "feature-generate-a-new-vector-based-abstract-background-design-that-transitions-from-green-to-teal-and-is-visually-pronounced",
+      "featureTitle": "Generate a new vector-based abstract background design that transitions from green to teal and is visually pronounced.",
+      "files": [],
       "components": [
         "core-infrastructure@1.0.2",
         "shadcn-ui@1.0.0",
@@ -18,37 +14,16 @@
         "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-46"
+        "REQ-93"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-the-admin-access-gating-ui-so-that-when-a-logged-in-user-is-denied-admin-access-the-page-displays-the-currently-authenticated-internet-identity-principal-and-clear-instructions-that-the-website-owner-must-set-this-principal-as-the-configured-admin-principal-for-access",
-      "featureTitle": "Update the admin access gating UI so that when a logged-in user is denied admin access, the page displays the currently authenticated Internet Identity Principal and clear instructions that the website owner must set this Principal as the configured admin Principal for access.",
-      "files": [
-        "frontend/src/components/AdminAccessGate.tsx",
-        "frontend/src/config/admin.ts"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "authorization@4.0.0"
-      ],
-      "testIds": [
-        "REQ-47"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-ensure-the-owner-only-admin-page-for-viewing-stored-user-accounts-remains-available-as-the-private-destination-for-submitted-user-information-and-ensure-it-is-accessible-only-after-internet-identity-login-and-admin-authorization",
-      "featureTitle": "Ensure the owner-only admin page for viewing stored user accounts remains available as the private destination for submitted user information, and ensure it is accessible only after Internet Identity login and admin authorization.",
+      "featureId": "feature-replace-the-existing-global-dual-layer-green-gradient-background-currently-applied-via-the-gradient-bg-right-class-and-its-before-after-layers-with-the-new-green-to-teal-vector-background-and-apply-it-globally-across-all-routes-pages-from-a-single-global-place-global-css-and-or-the-root-layout-container",
+      "featureTitle": "Replace the existing global dual-layer green gradient background (currently applied via the `gradient-bg-right` class and its `::before/::after` layers) with the new green-to-teal vector background, and apply it globally across all routes/pages from a single global place (global CSS and/or the root layout container).",
       "files": [
         "frontend/src/App.tsx",
-        "frontend/src/components/AdminAccessGate.tsx",
-        "frontend/src/pages/AdminUsersPage.tsx"
+        "frontend/src/index.css"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -59,7 +34,7 @@
         "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-48"
+        "REQ-94"
       ],
       "confidence": "high"
     }

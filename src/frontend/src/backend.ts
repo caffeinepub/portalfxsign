@@ -89,6 +89,13 @@ export class ExternalBlob {
         return this;
     }
 }
+export type UserLoginResponse = {
+    __kind__: "failure";
+    failure: string;
+} | {
+    __kind__: "success";
+    success: string | null;
+};
 export interface Account {
     created: Time;
     planId?: string;
@@ -97,6 +104,14 @@ export interface Account {
     passwordHash: string;
 }
 export type Time = bigint;
+export type SessionToken = bigint;
+export type AdminLoginResponse = {
+    __kind__: "failure";
+    failure: string;
+} | {
+    __kind__: "success";
+    success: SessionToken;
+};
 export interface UserProfile {
     name: string;
 }
@@ -115,11 +130,18 @@ export interface backendInterface {
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
+    healthCheck(): Promise<{
+        status: string;
+        timestamp: Time;
+    }>;
     isCallerAdmin(): Promise<boolean>;
     listAllAccounts(): Promise<Array<Account>>;
+    login(email: string, password: string): Promise<UserLoginResponse>;
+    loginAdmin(email: string, password: string): Promise<AdminLoginResponse>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    validateAdminSession(sessionId: SessionToken): Promise<boolean>;
 }
-import type { Account as _Account, Time as _Time, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
+import type { Account as _Account, AdminLoginResponse as _AdminLoginResponse, SessionToken as _SessionToken, Time as _Time, UserLoginResponse as _UserLoginResponse, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _initializeAccessControlWithSecret(arg0: string): Promise<void> {
@@ -222,6 +244,23 @@ export class Backend implements backendInterface {
             return from_candid_opt_n4(this._uploadFile, this._downloadFile, result);
         }
     }
+    async healthCheck(): Promise<{
+        status: string;
+        timestamp: Time;
+    }> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.healthCheck();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.healthCheck();
+            return result;
+        }
+    }
     async isCallerAdmin(): Promise<boolean> {
         if (this.processError) {
             try {
@@ -250,6 +289,34 @@ export class Backend implements backendInterface {
             return from_candid_vec_n7(this._uploadFile, this._downloadFile, result);
         }
     }
+    async login(arg0: string, arg1: string): Promise<UserLoginResponse> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.login(arg0, arg1);
+                return from_candid_UserLoginResponse_n11(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.login(arg0, arg1);
+            return from_candid_UserLoginResponse_n11(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async loginAdmin(arg0: string, arg1: string): Promise<AdminLoginResponse> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.loginAdmin(arg0, arg1);
+                return from_candid_AdminLoginResponse_n13(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.loginAdmin(arg0, arg1);
+            return from_candid_AdminLoginResponse_n13(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async saveCallerUserProfile(arg0: UserProfile): Promise<void> {
         if (this.processError) {
             try {
@@ -264,9 +331,29 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async validateAdminSession(arg0: SessionToken): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.validateAdminSession(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.validateAdminSession(arg0);
+            return result;
+        }
+    }
 }
 function from_candid_Account_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Account): Account {
     return from_candid_record_n9(_uploadFile, _downloadFile, value);
+}
+function from_candid_AdminLoginResponse_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _AdminLoginResponse): AdminLoginResponse {
+    return from_candid_variant_n14(_uploadFile, _downloadFile, value);
+}
+function from_candid_UserLoginResponse_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserLoginResponse): UserLoginResponse {
+    return from_candid_variant_n12(_uploadFile, _downloadFile, value);
 }
 function from_candid_UserRole_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
     return from_candid_variant_n6(_uploadFile, _downloadFile, value);
@@ -297,6 +384,44 @@ function from_candid_record_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint
         email: value.email,
         passwordHash: value.passwordHash
     };
+}
+function from_candid_variant_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    failure: string;
+} | {
+    success: [] | [string];
+}): {
+    __kind__: "failure";
+    failure: string;
+} | {
+    __kind__: "success";
+    success: string | null;
+} {
+    return "failure" in value ? {
+        __kind__: "failure",
+        failure: value.failure
+    } : "success" in value ? {
+        __kind__: "success",
+        success: from_candid_opt_n10(_uploadFile, _downloadFile, value.success)
+    } : value;
+}
+function from_candid_variant_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    failure: string;
+} | {
+    success: _SessionToken;
+}): {
+    __kind__: "failure";
+    failure: string;
+} | {
+    __kind__: "success";
+    success: SessionToken;
+} {
+    return "failure" in value ? {
+        __kind__: "failure",
+        failure: value.failure
+    } : "success" in value ? {
+        __kind__: "success",
+        success: value.success
+    } : value;
 }
 function from_candid_variant_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     admin: null;

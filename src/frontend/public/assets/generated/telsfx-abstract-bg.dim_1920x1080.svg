@@ -1,0 +1,84 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:oklch(0.75 0.18 165);stop-opacity:1" />
+      <stop offset="35%" style="stop-color:oklch(0.68 0.16 172);stop-opacity:1" />
+      <stop offset="70%" style="stop-color:oklch(0.62 0.14 185);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:oklch(0.58 0.12 195);stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="accentGradient1" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:oklch(0.82 0.20 168);stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:oklch(0.70 0.16 188);stop-opacity:0.3" />
+    </linearGradient>
+    
+    <linearGradient id="accentGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:oklch(0.65 0.15 192);stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:oklch(0.75 0.18 170);stop-opacity:0.2" />
+    </linearGradient>
+    
+    <radialGradient id="glowGradient1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:oklch(0.88 0.22 165);stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:oklch(0.75 0.18 165);stop-opacity:0" />
+    </radialGradient>
+    
+    <radialGradient id="glowGradient2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:oklch(0.70 0.16 190);stop-opacity:0.7" />
+      <stop offset="100%" style="stop-color:oklch(0.60 0.14 190);stop-opacity:0" />
+    </radialGradient>
+    
+    <filter id="blur1">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="40" />
+    </filter>
+    
+    <filter id="blur2">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="60" />
+    </filter>
+  </defs>
+  
+  <!-- Base gradient background -->
+  <rect width="1920" height="1080" fill="url(#mainGradient)" />
+  
+  <!-- Large flowing organic shapes -->
+  <path d="M-200 300 Q 400 150, 800 400 T 1600 350 Q 1900 500, 2100 200 L 2100 0 L -200 0 Z" 
+        fill="url(#accentGradient1)" opacity="0.4" filter="url(#blur1)" />
+  
+  <path d="M-100 800 Q 300 650, 700 850 T 1400 780 Q 1800 900, 2000 700 L 2000 1080 L -100 1080 Z" 
+        fill="url(#accentGradient2)" opacity="0.35" filter="url(#blur1)" />
+  
+  <!-- Curved wave layers -->
+  <path d="M 0 400 Q 480 320, 960 400 T 1920 400 L 1920 0 L 0 0 Z" 
+        fill="oklch(0.78 0.19 167 / 0.25)" filter="url(#blur2)" />
+  
+  <path d="M 0 700 Q 480 620, 960 700 T 1920 700 L 1920 1080 L 0 1080 Z" 
+        fill="oklch(0.64 0.15 188 / 0.3)" filter="url(#blur2)" />
+  
+  <!-- Geometric accent shapes -->
+  <circle cx="300" cy="200" r="180" fill="url(#glowGradient1)" opacity="0.5" filter="url(#blur1)" />
+  <circle cx="1600" cy="850" r="220" fill="url(#glowGradient2)" opacity="0.45" filter="url(#blur1)" />
+  
+  <ellipse cx="1200" cy="300" rx="280" ry="160" fill="oklch(0.72 0.17 175 / 0.3)" 
+           transform="rotate(-25 1200 300)" filter="url(#blur2)" />
+  
+  <ellipse cx="600" cy="850" rx="240" ry="140" fill="oklch(0.66 0.15 185 / 0.35)" 
+           transform="rotate(35 600 850)" filter="url(#blur2)" />
+  
+  <!-- Flowing abstract curves -->
+  <path d="M 400 0 Q 500 200, 600 400 Q 700 600, 800 800 Q 900 1000, 1000 1080" 
+        stroke="oklch(0.85 0.20 170 / 0.2)" stroke-width="80" fill="none" 
+        stroke-linecap="round" filter="url(#blur2)" />
+  
+  <path d="M 1400 0 Q 1300 250, 1200 500 Q 1100 750, 1000 1080" 
+        stroke="oklch(0.68 0.16 188 / 0.25)" stroke-width="100" fill="none" 
+        stroke-linecap="round" filter="url(#blur2)" />
+  
+  <!-- Additional organic blobs for depth -->
+  <path d="M 100 500 Q 250 400, 400 500 Q 550 600, 400 700 Q 250 800, 100 700 Q -50 600, 100 500 Z" 
+        fill="oklch(0.80 0.19 168 / 0.2)" filter="url(#blur1)" />
+  
+  <path d="M 1500 300 Q 1650 200, 1800 300 Q 1950 400, 1800 500 Q 1650 600, 1500 500 Q 1350 400, 1500 300 Z" 
+        fill="oklch(0.63 0.14 192 / 0.25)" filter="url(#blur1)" />
+  
+  <!-- Subtle texture overlay -->
+  <rect width="1920" height="1080" fill="oklch(0.70 0.17 178 / 0.08)" />
+</svg>

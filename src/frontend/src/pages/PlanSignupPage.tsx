@@ -16,7 +16,8 @@ export default function PlanSignupPage() {
   const createAccountMutation = useCreateAccount();
 
   const [formData, setFormData] = useState({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
   });
@@ -35,8 +36,11 @@ export default function PlanSignupPage() {
 
     // Validation
     const newErrors: Record<string, string> = {};
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'First name is required';
+    }
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'Last name is required';
     }
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
@@ -57,20 +61,28 @@ export default function PlanSignupPage() {
     setIsSubmitting(true);
 
     try {
-      // Create account in backend with plan ID
+      // Combine first and last name for backend
+      const fullName = `${formData.firstName.trim()} ${formData.lastName.trim()}`;
+      
+      // Create account in backend with plan ID (includes preflight health check)
       await createAccountMutation.mutateAsync({
-        name: formData.fullName,
+        name: fullName,
         email: formData.email,
         password: formData.password,
         planId: selectedPlan,
       });
 
-      // Small delay to show the button spinner, then trigger navigation
-      setTimeout(() => {
-        startTransition('/plans/success');
-      }, 300);
+      // Persist plan tier for login flow
+      sessionStorage.setItem('signupPlanTier', selectedPlan);
+      sessionStorage.setItem('loginFromSignup', 'true');
+
+      // Navigate to login page
+      startTransition('/plans/login', { search: { plan: selectedPlan } });
     } catch (error: any) {
-      toast.error(error.message || 'Failed to create account. Please try again.');
+      // Display normalized error message
+      toast.error(error.message || 'An unexpected error occurred. Please try again.');
+    } finally {
+      // Always re-enable the form after attempt
       setIsSubmitting(false);
     }
   };
@@ -99,18 +111,34 @@ export default function PlanSignupPage() {
         <GreenSectionCard className="p-8 md:p-10">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="fullName" className="text-base">Full Name</Label>
+              <Label htmlFor="firstName" className="text-base">First Name</Label>
               <Input
-                id="fullName"
+                id="firstName"
                 type="text"
-                placeholder="Enter your full name"
-                value={formData.fullName}
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                placeholder="Enter your first name"
+                value={formData.firstName}
+                onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                 className="h-12 text-base"
                 disabled={isSubmitting}
               />
-              {errors.fullName && (
-                <p className="text-sm text-destructive">{errors.fullName}</p>
+              {errors.firstName && (
+                <p className="text-sm text-destructive">{errors.firstName}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="lastName" className="text-base">Last Name</Label>
+              <Input
+                id="lastName"
+                type="text"
+                placeholder="Enter your last name"
+                value={formData.lastName}
+                onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                className="h-12 text-base"
+                disabled={isSubmitting}
+              />
+              {errors.lastName && (
+                <p className="text-sm text-destructive">{errors.lastName}</p>
               )}
             </div>
 
@@ -158,7 +186,7 @@ export default function PlanSignupPage() {
                   Creating Account...
                 </>
               ) : (
-                'Create Account & Continue'
+                'Sign Up'
               )}
             </Button>
 

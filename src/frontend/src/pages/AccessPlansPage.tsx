@@ -6,8 +6,15 @@ import { Check } from 'lucide-react';
 export default function AccessPlansPage() {
   const { startTransition } = useRouteTransition();
 
-  const handlePlanSelect = (planType: string) => {
+  const handlePlanSignup = (planType: string) => {
     startTransition('/plans/signup', { search: { plan: planType } });
+  };
+
+  const handleLoginClick = (planType: string) => {
+    // Set flags in sessionStorage to verify the login page was reached from plans
+    sessionStorage.setItem('loginFromPlans', 'true');
+    sessionStorage.setItem('loginPlanTier', planType);
+    startTransition('/plans/login', { search: { plan: planType } });
   };
 
   return (
@@ -26,18 +33,7 @@ export default function AccessPlansPage() {
         {/* Plans Grid */}
         <div className="grid md:grid-cols-3 gap-8 mb-16">
           {/* Regular Plan */}
-          <GreenSectionCard 
-            className="p-8 flex flex-col cursor-pointer hover:shadow-lg transition-shadow" 
-            onClick={() => handlePlanSelect('regular')}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handlePlanSelect('regular');
-              }
-            }}
-          >
+          <GreenSectionCard className="p-8 flex flex-col">
             <div className="mb-6">
               <h2 className="text-2xl font-bold mb-2">Regular Partnership</h2>
               <p className="text-muted-foreground text-sm">Perfect for those starting their partnership journey</p>
@@ -72,28 +68,28 @@ export default function AccessPlansPage() {
             <Button 
               size="lg" 
               className="w-full" 
-              onClick={(e) => {
-                e.stopPropagation();
-                handlePlanSelect('regular');
-              }}
+              onClick={() => handlePlanSignup('regular')}
             >
-              Select Regular
+              Sign Up
             </Button>
+
+            <div className="mt-4 text-center">
+              <p className="text-sm text-muted-foreground mb-2">
+                Already have an account?
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleLoginClick('regular')}
+                className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300"
+              >
+                Log in
+              </Button>
+            </div>
           </GreenSectionCard>
 
           {/* VIP Plan */}
-          <GreenSectionCard 
-            className="p-8 flex flex-col border-2 border-emerald-500/50 dark:border-emerald-400/30 relative overflow-hidden cursor-pointer hover:shadow-lg transition-shadow" 
-            onClick={() => handlePlanSelect('vip')}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handlePlanSelect('vip');
-              }
-            }}
-          >
+          <GreenSectionCard className="p-8 flex flex-col border-2 border-emerald-500/50 dark:border-emerald-400/30 relative overflow-hidden">
             <div className="absolute top-4 right-4 bg-emerald-600 dark:bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
               POPULAR
             </div>
@@ -129,42 +125,38 @@ export default function AccessPlansPage() {
               </div>
               <div className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span className="text-sm text-muted-foreground">Exclusive VIP events</span>
+                <span className="text-sm text-muted-foreground">Advanced analytics dashboard</span>
               </div>
             </div>
 
             <Button 
               size="lg" 
-              className="w-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600" 
-              onClick={(e) => {
-                e.stopPropagation();
-                handlePlanSelect('vip');
-              }}
+              className="w-full" 
+              onClick={() => handlePlanSignup('vip')}
             >
-              Select VIP
+              Sign Up
             </Button>
+
+            <div className="mt-4 text-center">
+              <p className="text-sm text-muted-foreground mb-2">
+                Already have an account?
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleLoginClick('vip')}
+                className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300"
+              >
+                Log in
+              </Button>
+            </div>
           </GreenSectionCard>
 
           {/* VIP+ Plan */}
-          <GreenSectionCard 
-            className="p-8 flex flex-col border-2 border-teal-500/50 dark:border-teal-400/30 relative overflow-hidden cursor-pointer hover:shadow-lg transition-shadow" 
-            onClick={() => handlePlanSelect('vip-plus')}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handlePlanSelect('vip-plus');
-              }
-            }}
-          >
-            <div className="absolute top-4 right-4 bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-500 dark:to-teal-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
-              PREMIUM
-            </div>
-
+          <GreenSectionCard className="p-8 flex flex-col">
             <div className="mb-6">
               <h2 className="text-2xl font-bold mb-2">VIP+ Partnership</h2>
-              <p className="text-muted-foreground text-sm">Elite tier for maximum commitment and returns</p>
+              <p className="text-muted-foreground text-sm">Elite tier for maximum profit potential</p>
             </div>
 
             <div className="mb-6">
@@ -172,7 +164,7 @@ export default function AccessPlansPage() {
                 <span className="text-4xl font-bold text-emerald-600 dark:text-emerald-400">$5,000</span>
               </div>
               <p className="text-sm text-muted-foreground mb-3">Partnership fee</p>
-              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30 p-3 rounded-lg border border-emerald-200 dark:border-emerald-800">
+              <div className="bg-emerald-50 dark:bg-emerald-950/30 p-3 rounded-lg border border-emerald-200 dark:border-emerald-800">
                 <p className="text-xs text-muted-foreground mb-1">Potential profit:</p>
                 <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">$15,000</p>
               </div>
@@ -185,7 +177,7 @@ export default function AccessPlansPage() {
               </div>
               <div className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span className="text-sm text-muted-foreground">Highest priority access</span>
+                <span className="text-sm text-muted-foreground">Exclusive partnership opportunities</span>
               </div>
               <div className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
@@ -193,39 +185,37 @@ export default function AccessPlansPage() {
               </div>
               <div className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span className="text-sm text-muted-foreground">Premium analytics suite</span>
+                <span className="text-sm text-muted-foreground">Premium profit-sharing model</span>
               </div>
               <div className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
-                <span className="text-sm text-muted-foreground">Exclusive elite network</span>
+                <span className="text-sm text-muted-foreground">Early access to new products</span>
               </div>
             </div>
 
             <Button 
               size="lg" 
-              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 dark:from-emerald-500 dark:to-teal-500" 
-              onClick={(e) => {
-                e.stopPropagation();
-                handlePlanSelect('vip-plus');
-              }}
+              className="w-full" 
+              onClick={() => handlePlanSignup('vip-plus')}
             >
-              Select VIP+
+              Sign Up
             </Button>
+
+            <div className="mt-4 text-center">
+              <p className="text-sm text-muted-foreground mb-2">
+                Already have an account?
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleLoginClick('vip-plus')}
+                className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300"
+              >
+                Log in
+              </Button>
+            </div>
           </GreenSectionCard>
         </div>
-
-        {/* Additional Info */}
-        <GreenSectionCard className="p-8 md:p-10 max-w-4xl mx-auto">
-          <h3 className="text-2xl font-bold mb-4">What to Expect</h3>
-          <div className="prose prose-lg dark:prose-invert max-w-none">
-            <p className="text-muted-foreground leading-relaxed">
-              Our partnership programs are designed to provide access to opportunities inspired by sustainable technology innovation. Members contribute on a regular schedule and gain access to exclusive resources, community insights, and potential returns based on program performance.
-            </p>
-            <p className="text-muted-foreground leading-relaxed mt-4">
-              Each tier offers unique benefits and opportunities tailored to different levels of commitment. Join our community today and start your journey toward participating in the future of sustainable technology.
-            </p>
-          </div>
-        </GreenSectionCard>
       </div>
     </div>
   );

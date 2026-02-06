@@ -1,16 +1,56 @@
 import { useListAllAccounts } from '../hooks/useQueries';
-import AdminAccessGate from '../components/AdminAccessGate';
+import { useRequireAdminSession } from '../hooks/useAdminSession';
+import { useRouteTransition } from '../hooks/useRouteTransition';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Users, ShieldCheck } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Loader2, Users, ShieldCheck, AlertCircle } from 'lucide-react';
 
 export default function AdminUsersPage() {
-  return (
-    <AdminAccessGate>
-      <AdminUsersContent />
-    </AdminAccessGate>
-  );
+  const { hasToken, isValid, isLoading: sessionLoading } = useRequireAdminSession();
+  const { startTransition } = useRouteTransition();
+
+  // Show loading while checking session
+  if (sessionLoading) {
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex flex-col items-center justify-center min-h-[40vh] space-y-4">
+          <Loader2 className="w-12 h-12 animate-spin text-emerald-600" />
+          <p className="text-muted-foreground">Verifying access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If not authenticated, show access denied with navigation back
+  if (!hasToken || !isValid) {
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
+          <div className="w-20 h-20 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+            <AlertCircle className="w-10 h-10 text-red-600 dark:text-red-400" />
+          </div>
+
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl font-bold">Access Denied</h1>
+            <p className="text-muted-foreground max-w-md">
+              You do not have permission to access this page. Please contact an administrator if you believe this is an error.
+            </p>
+          </div>
+
+          <Button
+            onClick={() => startTransition('/')}
+            className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
+          >
+            Return to Home
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return <AdminUsersContent />;
 }
 
 function AdminUsersContent() {

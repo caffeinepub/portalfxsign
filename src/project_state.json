@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 31,
-  "summary": "Add owner-only user account viewing (admin II login) + dynamic “thousands of users” counter, remove the “Built with Caffeine” footer text/emoji, and add standalone Terms & Conditions and Privacy Policy pages that the footer links correctly navigate to, keeping everything else intact.",
+  "projectStateVersion": 57,
+  "summary": "Shift the standalone user journey so that after account creation users are taken to a standalone login page first, then after successful login they are routed to a brand-new Profit/Products page (plan-tier-specific Tesla-style products + main plan profit + a separate extra-profit section) with a Telegram CTA at the bottom; this replaces the current behavior where signup/login takes users directly to the Products list.",
   "architectural_notes": [
     "Include explicit disclaimers to avoid implying official Tesla affiliation/endorsement.",
     "Avoid trademark infringement: do not use a Tesla-similar logo or Tesla-owned brand assets; create an original brand identity.",
@@ -23,9 +23,11 @@
     "Rebranding to “TelsFX” plus a Tesla-resembling logo increases trademark/trade dress risk; ensure logo remains clearly original and does not copy Tesla’s mark.",
     "Mobile issue: after clicking any clickable button (Create Account, Access Plans, plan cards, Products), spinner shows but navigation does not occur; user remains on Home page with no URL/fade change.",
     "Owner cannot access /users admin page (Access Denied) and does not know their Internet Identity/admin Principal; project lacks a clear way to view/reset/configure admin principal, causing admin lockout.",
-    "User requested collection/forwarding of SSN and passwords; high security/privacy risk and likely non-compliant—must be rejected or redesigned (do not store/forward passwords; avoid SSN collection)."
+    "User requested collection/forwarding of SSN and passwords; high security/privacy risk and likely non-compliant—must be rejected or redesigned (do not store/forward passwords; avoid SSN collection).",
+    "Replacing Internet Identity with email+password admin auth introduces additional security risk (credential storage, brute-force protection, session handling) and must be implemented carefully."
   ],
   "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Abstract vector background with prominent flowing geometric layers, green-to-teal gradient (telsfx-abstract-bg.dim_1920x1080.svg)",
   "existing_features": [
     {
       "id": "feature-set-the-website-branding-name-to-portalfxsign-and-reflect-it-consistently-across-the-app-header-navigation-page-titles-metadata-where-applicable",
@@ -394,6 +396,326 @@
         "REQ-48"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-remove-internet-identity-as-the-mechanism-for-admin-authentication-authorization-and-replace-it-with-an-admin-email-password-login-whose-credential-verification-is-performed-in-the-backend-canister-credentials-must-not-be-exposed-publicly-in-the-frontend",
+      "title": "Remove Internet Identity as the mechanism for admin authentication/authorization and replace it with an admin email + password login whose credential verification is performed in the backend canister (credentials must not be exposed publicly in the frontend).",
+      "reqIds": [
+        "REQ-49"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-new-dedicated-admin-login-page-route-that-prompts-for-admin-email-and-password-and-on-successful-login-navigates-directly-to-the-page-that-shows-all-stored-user-information",
+      "title": "Add a new dedicated admin login page/route that prompts for admin email and password and, on successful login, navigates directly to the page that shows all stored user information.",
+      "reqIds": [
+        "REQ-51"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-existing-users-gating-mechanism-currently-based-on-adminaccessgate-internet-identity-admin-checks-with-an-email-password-session-gate-if-the-user-is-not-logged-in-as-admin-no-valid-session-users-must-redirect-to-the-admin-login-page-if-logged-in-users-must-display-the-existing-registered-users-table-ui",
+      "title": "Replace the existing /users gating mechanism (currently based on AdminAccessGate/Internet Identity admin checks) with an email+password session gate: if the user is not logged in as admin (no valid session), /users must redirect to the admin login page; if logged in, /users must display the existing registered-users table UI.",
+      "reqIds": [
+        "REQ-52"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-floating-admin-access-button-that-appears-at-the-bottom-of-the-current-page-only-after-the-site-logo-is-clicked-clicking-the-floating-button-navigates-to-the-admin-login-page-using-the-existing-route-transition-ux",
+      "title": "Add a floating admin access button that appears at the bottom of the current page only after the site logo is clicked; clicking the floating button navigates to the admin login page using the existing route-transition UX.",
+      "reqIds": [
+        "REQ-53"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-keep-every-other-existing-site-behavior-routes-design-including-the-green-tinted-section-theme-and-user-signup-telegram-flows-intact-aside-from-the-admin-auth-replacement-and-the-new-logo-triggered-floating-admin-button-admin-login-page",
+      "title": "Keep every other existing site behavior, routes, design (including the green-tinted section theme), and user signup/Telegram flows intact aside from the admin-auth replacement and the new logo-triggered floating admin button + admin login page.",
+      "reqIds": [
+        "REQ-54"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-the-dedicated-admin-login-page-from-the-frontend-so-it-is-no-longer-accessible-as-a-route-and-cannot-be-navigated-to-from-any-ui-element",
+      "title": "Remove the dedicated Admin Login page from the frontend so it is no longer accessible as a route and cannot be navigated to from any UI element.",
+      "reqIds": [
+        "REQ-55"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-the-floating-admin-button-feature-entirely-so-no-admin-access-button-can-appear-on-any-page-including-after-clicking-the-site-logo",
+      "title": "Remove the Floating Admin Button feature entirely so no admin access button can appear on any page (including after clicking the site logo).",
+      "reqIds": [
+        "REQ-56"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-removing-the-admin-login-page-and-floating-admin-button-does-not-break-any-existing-navigation-or-route-transition-ux-spinner-fade-in-and-that-any-admin-only-route-behavior-fails-safely-without-redirecting-to-a-removed-route",
+      "title": "Ensure removing the Admin Login page and Floating Admin Button does not break any existing navigation or route-transition UX (spinner + fade-in), and that any admin-only route behavior fails safely without redirecting to a removed route.",
+      "reqIds": [
+        "REQ-57"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-access-plans-page-so-that-each-plan-tier-contains-a-clearly-labeled-sign-up-button-one-per-plan-and-this-button-is-the-only-entry-point-on-the-site-for-the-new-plan-based-signup-flow",
+      "title": "Update the Access Plans page so that each plan tier contains a clearly labeled “Sign Up” button (one per plan) and this button is the only entry point on the site for the new plan-based signup flow.",
+      "reqIds": [
+        "REQ-58"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-existing-plan-signup-page-with-a-new-standalone-plan-signup-page-that-collects-first-name-last-name-email-and-password-and-associates-the-submission-with-the-selected-plan-tier",
+      "title": "Replace the existing plan signup page with a new standalone plan signup page that collects: First Name, Last Name, Email, and Password, and associates the submission with the selected plan tier.",
+      "reqIds": [
+        "REQ-59"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-new-standalone-post-signup-page-that-a-explains-the-user-s-plan-level-profit-analysis-b-shows-three-invented-tesla-related-products-for-the-selected-plan-c-shows-a-plan-tier-specific-extra-profit-value-and-d-includes-a-confirm-action-and-the-telegram-link-cta-on-the-same-page",
+      "title": "Create a new standalone post-signup page that (a) explains the user’s plan-level profit analysis, (b) shows three invented Tesla-related products for the selected plan, (c) shows a plan-tier-specific “extra profit” value, and (d) includes a confirm action and the Telegram link/CTA on the same page.",
+      "reqIds": [
+        "REQ-60"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-the-existing-plan-flow-success-confirmation-step-and-stop-routing-users-to-it-after-plan-signup-the-new-flow-must-be-exactly-two-standalone-pages-1-plan-signup-form-then-2-the-new-post-signup-profit-products-confirm-telegram-page",
+      "title": "Remove the existing plan-flow success confirmation step and stop routing users to it after plan signup; the new flow must be exactly two standalone pages: (1) plan signup form, then (2) the new post-signup profit/products + confirm + Telegram page.",
+      "reqIds": [
+        "REQ-61"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-the-existing-general-public-signup-interface-path-from-the-site-ui-so-that-users-are-not-prompted-to-create-accounts-outside-of-the-access-plans-per-plan-signup-flow",
+      "title": "Remove the existing general/public signup interface/path from the site UI so that users are not prompted to create accounts outside of the Access Plans per-plan signup flow.",
+      "reqIds": [
+        "REQ-62"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-all-new-updated-navigations-introduced-by-this-change-access-plans-sign-up-button-plan-signup-plan-signup-submit-post-signup-page-confirm-action-telegram-use-the-existing-global-route-transition-ux-spinner-fade-in-and-do-not-reintroduce-broken-navigation",
+      "title": "Ensure all new/updated navigations introduced by this change (Access Plans “Sign Up” button → plan signup, plan signup submit → post-signup page, confirm action → Telegram) use the existing global route transition UX (spinner + fade-in) and do not reintroduce broken navigation.",
+      "reqIds": [
+        "REQ-64"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-react-app-blank-screen-startup-by-correcting-the-tanstack-router-setup-in-frontend-src-app-tsx-so-that-there-is-exactly-one-routerprovider-in-the-component-tree-and-the-root-route-renders-route-content-via-tanstack-router-s-outlet-pattern-do-not-render-a-nested-routerprovider-inside-the-root-route",
+      "title": "Fix the React app blank-screen startup by correcting the TanStack Router setup in `frontend/src/App.tsx` so that there is exactly one `RouterProvider` in the component tree and the root route renders route content via TanStack Router’s outlet pattern (do not render a nested `RouterProvider` inside the root route).",
+      "reqIds": [
+        "REQ-65"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-route-transition-system-so-the-app-can-render-ensure-routetransitionprovider-from-frontend-src-hooks-useroutetransition-tsx-is-mounted-within-a-valid-tanstack-router-context-because-it-calls-usenavigate-and-ensure-components-using-useroutetransition-e-g-siteheader-sitefooter-landingpage-plan-pages-can-render-without-throwing-context-related-errors",
+      "title": "Fix the route-transition system so the app can render: ensure `RouteTransitionProvider` from `frontend/src/hooks/useRouteTransition.tsx` is mounted within a valid TanStack Router context (because it calls `useNavigate`), and ensure components using `useRouteTransition()` (e.g., `SiteHeader`, `SiteFooter`, `LandingPage`, plan pages) can render without throwing context-related errors.",
+      "reqIds": [
+        "REQ-66"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-keep-the-existing-ui-flows-intact-while-fixing-the-load-issue-do-not-change-page-layouts-routes-plan-values-form-fields-or-redirect-destinations-except-as-strictly-needed-to-restore-rendering-and-navigation",
+      "title": "Keep the existing UI/flows intact while fixing the load issue: do not change page layouts, routes, plan values, form fields, or redirect destinations except as strictly needed to restore rendering and navigation.",
+      "reqIds": [
+        "REQ-67"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-site-header-so-the-top-right-navigation-is-always-a-hamburger-three-line-menu-instead-of-the-current-access-plans-plans-header-button-and-the-slide-out-menu-contains-only-these-items-home-access-plans-products",
+      "title": "Update the site header so the top-right navigation is always a hamburger (three-line) menu instead of the current “Access Plans”/“Plans” header button, and the slide-out menu contains only these items: Home, Access Plans, Products.",
+      "reqIds": [
+        "REQ-68"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-only-visible-disclaimer-text-blocks-from-all-pages-while-keeping-the-standalone-terms-conditions-terms-and-privacy-policy-privacy-pages-intact",
+      "title": "Remove only visible disclaimer text/blocks from all pages while keeping the standalone Terms & Conditions (`/terms`) and Privacy Policy (`/privacy`) pages intact.",
+      "reqIds": [
+        "REQ-69"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-client-plan-signup-submit-flow-so-that-after-the-user-enters-valid-signup-information-and-the-backend-account-creation-succeeds-the-app-reliably-navigates-to-the-next-standalone-post-signup-page-plans-post-signup-with-the-selected-plan-preserved",
+      "title": "Fix the client plan signup submit flow so that after the user enters valid signup information and the backend account creation succeeds, the app reliably navigates to the next standalone post-signup page (`/plans/post-signup`) with the selected plan preserved.",
+      "reqIds": [
+        "REQ-70"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-standalone-post-signup-page-plans-post-signup-content-so-that-plan-tier-specific-products-are-clearly-presented-as-the-user-s-profit-related-items-opportunities-include-short-explanatory-english-text-that-makes-sense-and-provide-a-clearly-visible-telegram-link-cta",
+      "title": "Update the standalone post-signup page (`/plans/post-signup`) content so that plan-tier-specific products are clearly presented as the user’s profit-related items/opportunities, include short explanatory English text that “makes sense,” and provide a clearly visible Telegram link/CTA.",
+      "reqIds": [
+        "REQ-71"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-redeploy-the-project-so-the-backend-canister-is-running-again-not-stopped-and-the-createaccount-call-succeeds-from-the-plan-signup-flow",
+      "title": "Redeploy the project so the backend canister is running again (not stopped) and the `createAccount` call succeeds from the plan signup flow.",
+      "reqIds": [
+        "REQ-72"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-frontend-account-creation-error-handling-so-canister-stop-replica-rejection-errors-including-ic0508-are-shown-as-a-short-professional-message-english-instead-of-dumping-the-full-technical-replica-error-into-the-ui",
+      "title": "Update the frontend account-creation error handling so canister-stop / replica rejection errors (including IC0508) are shown as a short, professional message (English) instead of dumping the full technical replica error into the UI.",
+      "reqIds": [
+        "REQ-74"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-before-attempting-createaccount-perform-a-lightweight-preflight-check-using-the-new-backend-health-status-query-if-it-fails-block-submission-and-show-the-same-concise-professional-error-message-instead-of-attempting-the-mutation",
+      "title": "Before attempting `createAccount`, perform a lightweight preflight check using the new backend health/status query; if it fails, block submission and show the same concise professional error message instead of attempting the mutation.",
+      "reqIds": [
+        "REQ-75"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-existing-user-login-call-to-action-inside-each-access-plans-plan-card-regular-vip-vip-consisting-of-short-english-text-e-g-already-have-an-account-plus-a-clearly-clickable-log-in-link-button-placed-within-the-card-near-the-plan-s-sign-up-button-clicking-the-login-link-button-must-navigate-to-a-standalone-login-page-and-must-use-the-existing-global-route-transition-ux-spinner-fade-in",
+      "title": "Add an existing-user login call-to-action inside each Access Plans plan card (Regular, VIP, VIP+) consisting of short English text (e.g., “Already have an account?”) plus a clearly clickable “Log in” link/button placed within the card (near the plan’s Sign Up button). Clicking the login link/button must navigate to a standalone login page and must use the existing global route-transition UX (spinner + fade-in).",
+      "reqIds": [
+        "REQ-76"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-new-standalone-user-login-page-route-e-g-plans-login-that-is-intended-to-be-reached-only-from-the-per-plan-login-links-on-the-access-plans-page-the-page-must-display-an-email-password-login-form-with-professional-english-ui-text-and-validate-inputs-client-side-on-successful-login-it-must-redirect-the-user-to-the-products-page-products-using-the-existing-global-route-transition-ux-spinner-fade-in",
+      "title": "Create a new standalone user login page route (e.g., `/plans/login`) that is intended to be reached only from the per-plan login links on the Access Plans page. The page must display an email + password login form with professional English UI text and validate inputs client-side. On successful login, it must redirect the user to the Products page (`/products`) using the existing global route-transition UX (spinner + fade-in).",
+      "reqIds": [
+        "REQ-77"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-frontend-react-query-mutation-hook-for-the-new-backend-user-login-authentication-method-and-wire-it-into-the-standalone-login-page-submit-flow-the-login-flow-must-display-concise-professional-english-error-messaging-on-failure-and-must-not-dump-raw-replica-canister-errors-to-the-ui",
+      "title": "Add a frontend React Query mutation hook for the new backend user login/authentication method and wire it into the standalone login page submit flow. The login flow must display concise, professional English error messaging on failure and must not dump raw replica/canister errors to the UI.",
+      "reqIds": [
+        "REQ-79"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-keep-all-other-existing-site-behavior-routes-visual-theme-including-green-tinted-sections-and-existing-signup-post-signup-telegram-flows-unchanged-aside-from-adding-the-per-plan-login-link-standalone-login-page-and-the-backend-login-support",
+      "title": "Keep all other existing site behavior, routes, visual theme (including green-tinted sections), and existing signup/post-signup/Telegram flows unchanged, aside from adding the per-plan login link + standalone login page and the backend login support.",
+      "reqIds": [
+        "REQ-80"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-plan-signup-success-flow-so-that-after-backend-account-creation-succeeds-the-user-is-routed-to-the-standalone-login-page-first-instead-of-going-directly-to-products-or-the-current-post-signup-page-the-selected-plan-tier-must-be-preserved-for-the-subsequent-login-profit-experience",
+      "title": "Update the plan signup success flow so that after backend account creation succeeds, the user is routed to the standalone login page first (instead of going directly to products or the current post-signup page). The selected plan tier must be preserved for the subsequent login→profit experience.",
+      "reqIds": [
+        "REQ-81"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-adjust-the-login-gating-logic-so-the-standalone-login-page-can-be-reached-both-a-from-the-access-plans-page-log-in-buttons-and-b-from-the-post-signup-redirect-signup-login-without-being-bounced-back-to-plans",
+      "title": "Adjust the login gating logic so the standalone login page can be reached both (a) from the Access Plans page “Log in” buttons and (b) from the post-signup redirect (signup→login), without being bounced back to `/plans`.",
+      "reqIds": [
+        "REQ-82"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-brand-new-post-login-profit-page-and-route-that-displays-plan-tier-specific-content-1-tesla-style-product-items-2-the-plan-s-main-profit-value-regular-5-000-vip-10-000-vip-15-000-and-3-a-separate-extra-profit-section-the-page-must-include-a-telegram-cta-at-the-bottom-that-links-to-https-t-me-portal-fx-sign",
+      "title": "Create a brand-new post-login Profit page and route that displays plan-tier-specific content: (1) Tesla-style product items, (2) the plan’s main profit value (Regular $5,000; VIP $10,000; VIP+ $15,000), and (3) a separate extra-profit section. The page must include a Telegram CTA at the bottom that links to https://t.me/Portal_fx_sign.",
+      "reqIds": [
+        "REQ-83"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-change-the-successful-user-login-redirect-so-that-after-a-successful-login-users-are-directed-to-the-new-profit-page-not-the-products-page-with-the-plan-tier-correctly-resolved-and-preserved",
+      "title": "Change the successful user login redirect so that after a successful login, users are directed to the new Profit page (not the Products page), with the plan tier correctly resolved and preserved.",
+      "reqIds": [
+        "REQ-84"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-frontend-login-react-query-hook-and-login-page-submit-flow-to-consume-the-backend-s-enhanced-login-success-response-including-planid-persist-it-for-the-session-and-route-to-the-new-profit-page-accordingly-ensure-errors-remain-concise-and-professional-do-not-dump-raw-replica-canister-errors",
+      "title": "Update the frontend login React Query hook and login page submit flow to consume the backend’s enhanced login success response (including planId), persist it for the session, and route to the new Profit page accordingly. Ensure errors remain concise and professional (do not dump raw replica/canister errors).",
+      "reqIds": [
+        "REQ-86"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-subtle-green-themed-color-gradient-background-that-appears-on-the-right-side-of-every-page-across-the-site-all-routes-using-a-best-fit-gradient-style-that-matches-the-existing-green-theme",
+      "title": "Add a subtle green-themed color gradient background that appears on the right side of every page across the site (all routes), using a best-fit gradient style that matches the existing green theme.",
+      "reqIds": [
+        "REQ-87"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-right-side-page-background-gradient-in-a-single-global-place-root-layout-or-global-stylesheet-so-that-individual-pages-do-not-need-per-page-modifications-and-the-effect-remains-consistent-site-wide",
+      "title": "Implement the right-side page background gradient in a single global place (root layout or global stylesheet) so that individual pages do not need per-page modifications and the effect remains consistent site-wide.",
+      "reqIds": [
+        "REQ-88"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-plan-user-login-flow-so-that-clicking-log-in-on-the-standalone-login-page-plans-login-no-longer-incorrectly-results-in-the-generic-message-service-is-temporarily-unavailable-when-the-backend-is-actually-reachable-and-credentials-are-invalid-invalid-credentials-must-show-the-existing-user-facing-message-invalid-email-or-password-please-try-again",
+      "title": "Fix the plan user login flow so that clicking “Log In” on the standalone login page (`/plans/login`) no longer incorrectly results in the generic message “Service is temporarily unavailable” when the backend is actually reachable and credentials are invalid; invalid credentials must show the existing user-facing message “Invalid email or password. Please try again.”",
+      "reqIds": [
+        "REQ-89"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-the-same-lightweight-backend-reachability-preflight-used-for-account-creation-to-the-user-login-mutation-before-attempting-actor-login-email-password-call-the-backend-health-check-and-if-it-fails-block-the-login-attempt-and-show-the-same-concise-professional-error-message-do-not-dump-technical-details",
+      "title": "Add the same lightweight backend reachability preflight used for account creation to the user login mutation: before attempting `actor.login(email, password)`, call the backend health check and, if it fails, block the login attempt and show the same concise professional error message (do not dump technical details).",
+      "reqIds": [
+        "REQ-90"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-two-global-gradients-simultaneously-across-all-pages-keep-the-existing-subtle-right-side-green-gradient-and-add-a-second-stronger-green-or-matching-gradient-layered-behind-it-so-the-effect-is-clearly-visible-site-wide-without-changing-existing-page-layouts-or-route-structure",
+      "title": "Apply two global gradients simultaneously across all pages: keep the existing subtle right-side green gradient and add a second, stronger green (or matching) gradient layered behind it so the effect is clearly visible site-wide without changing existing page layouts or route structure.",
+      "reqIds": [
+        "REQ-92"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-generate-a-new-vector-based-abstract-background-design-that-transitions-from-green-to-teal-and-is-visually-pronounced",
+      "title": "Generate a new vector-based abstract background design that transitions from green to teal and is visually pronounced.",
+      "reqIds": [
+        "REQ-93"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-existing-global-dual-layer-green-gradient-background-currently-applied-via-the-gradient-bg-right-class-and-its-before-after-layers-with-the-new-green-to-teal-vector-background-and-apply-it-globally-across-all-routes-pages-from-a-single-global-place-global-css-and-or-the-root-layout-container",
+      "title": "Replace the existing global dual-layer green gradient background (currently applied via the `gradient-bg-right` class and its `::before/::after` layers) with the new green-to-teal vector background, and apply it globally across all routes/pages from a single global place (global CSS and/or the root layout container).",
+      "reqIds": [
+        "REQ-94"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -490,18 +812,6 @@
       "status": "pending"
     },
     {
-      "id": "AR-21",
-      "summary": "Add an Internet Identity–protected admin-only area (owner login) so only the website owner can access sensitive admin pages (e.g., user list).",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-22",
-      "summary": "Implement a simple canister API endpoint + minimal UI page (e.g., /users) to fetch and display stored user accounts (name + email), accessible only to the owner via admin login.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
       "id": "AR-23",
       "summary": "Add a professional Home page KPI/stat showing “thousands of users” with a number that counts upward slowly (animated counter), keeping all other content/sections intact.",
       "reqIds": [],
@@ -547,7 +857,101 @@
     },
     {
       "id": "AR-30",
-      "summary": "Provide a private admin-only area (separate route/section protected by Internet Identity) where all user-submitted signup information is stored and viewable only by the owner/admin, as an alternative to forwarding data to Telegram/email.",
+      "summary": "On the Access Plans page, add a per-plan “Sign Up” button and replace the existing plan/signup flow with two standalone pages: (1) a new signup page collecting first name, last name, email, and password; then (2) a post-signup page that shows plan-level profit analysis plus three invented Tesla-related products per plan and a plan-tier-specific “extra profit”, includes a confirm action, and displays the Telegram link/CTA on the same page; remove the existing general signup path and remove the existing success confirmation step entirely.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-36",
+      "summary": "Adjust the backend account-creation authorization so that public users can create accounts from the new plan signup flow without requiring prior Internet Identity/role authorization checks that would trap the call.",
+      "reqIds": [
+        "REQ-63"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-37",
+      "summary": "Replace the header “Access Plans” link with a hamburger (three-line) menu at top-right that opens a slide-out menu containing only: Home, Access Plan(s), and Product(s).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-38",
+      "summary": "Fix the client plan-signup submit flow so it reliably navigates to the next standalone post-signup page after entering signup information (no stuck state).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-39",
+      "summary": "Update the standalone post-signup page to clearly show plan-tier-specific products (presented as profit-related products), include proper explanatory text, and provide a Telegram link/CTA.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-40",
+      "summary": "Remove only visible disclaimer text across all pages while keeping the standalone Terms & Conditions (/terms) and Privacy Policy (/privacy) pages intact.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-42",
+      "summary": "Add a public backend health/status query method that can be called without authentication to confirm the canister is reachable (e.g., returns a simple constant like \"ok\" along with an optional timestamp).",
+      "reqIds": [
+        "REQ-73"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-43",
+      "summary": "Add an existing-user login option within each Access Plan card (text + link), linking to a standalone login page that is only reachable via those per-plan links; authenticate using the same stored account records (email+password) from the plan signup flow; on successful login always redirect to the Products page; keep everything else unchanged.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-46",
+      "summary": "Implement backend user authentication against existing stored account records by adding a public method that verifies an email + password combination for an existing account and returns a success/failure result without trapping. This authentication must use the same account store created by `createAccount` (keyed by email).",
+      "reqIds": [
+        "REQ-78"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-47",
+      "summary": "After a user creates an account, redirect them to the standalone login page first (no direct redirect to Products). After successful login, redirect to a new Profit page.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-48",
+      "summary": "Create a brand-new post-login Profit page that shows (by selected plan tier) Tesla-style product items, the plan’s main profit, and a separate extra-profit section, and includes a Telegram CTA at the bottom that links to https://t.me/Portal_fx_sign.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-49",
+      "summary": "Update the existing-user login success redirect to go to the new Profit page (instead of the Products page), preserving plan-tier-specific content.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-54",
+      "summary": "Update the backend user login response to include the user’s stored plan tier (planId) so the frontend can render the correct post-login Profit page content for existing users. Keep the backend single-actor architecture and avoid any state migrations unless strictly required.",
+      "reqIds": [
+        "REQ-85"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-59",
+      "summary": "Ensure the backend `login(email, password)` method never traps for normal invalid-input cases and always returns a `#failure` variant with a user-friendly English message for invalid credentials; only unexpected internal failures may trap.",
+      "reqIds": [
+        "REQ-91"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-60",
+      "summary": "Replace the existing dual green gradients with a new global, vector-based abstract background design applied to all pages: a visually pronounced gradient transitioning from green to teal.",
       "reqIds": [],
       "status": "pending"
     }

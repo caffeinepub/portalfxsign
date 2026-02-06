@@ -1,11 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Make it easier for the site owner to access the admin-only stored user information by providing clear Internet Identity help and showing the current authenticated Principal when admin access is denied.
+**Goal:** Replace the existing dual green gradient background with a more visually pronounced, original green-to-teal abstract vector background applied globally across the site.
 
 **Planned changes:**
-- Add a new unlinked admin-help route/page that explains, in English, how the owner can access admin-only user information using Internet Identity, including a prominent external link to https://id.ai/manage (or the configured provider URL) and step-by-step instructions.
-- Update the admin access denied UI to display the currently authenticated Internet Identity Principal (when available) and English instructions explaining that this Principal must match the configured admin Principal in frontend configuration.
-- Keep the existing admin-only user list route (e.g., `/users`) protected: anonymous users are prompted to log in, non-admin authenticated users are denied, and the backend continues to reject non-admin callers; the UI continues to avoid displaying sensitive fields.
+- Create a new original abstract vector background SVG asset that transitions from green to teal with prominent abstract shapes.
+- Remove/replace the existing `gradient-bg-right` dual-layer gradient (`::before/::after`) so it is no longer visible anywhere.
+- Apply the new vector background globally from a single shared location (global CSS and/or root layout container), ensuring all routes use it consistently and content remains readable/clickable.
 
-**User-visible outcome:** The owner can open a private help page to learn how to manage Internet Identity and find their Principal, and if denied admin access they can see their current Principal and what to configure to gain access; the admin-only user list remains available only after login + admin authorization.
+**User-visible outcome:** Every page shows the new pronounced green-to-teal abstract vector background consistently, with the prior dual green gradients fully removed and all existing navigation and route-transition behavior unchanged.

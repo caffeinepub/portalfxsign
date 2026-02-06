@@ -1,48 +1,56 @@
-import { RouterProvider, createRouter, createRoute, createRootRoute, Outlet, useRouterState } from '@tanstack/react-router';
-import LandingPage from './pages/LandingPage';
-import AccessPlansPage from './pages/AccessPlansPage';
-import ProductsPage from './pages/ProductsPage';
-import PlanSignupPage from './pages/PlanSignupPage';
-import PlanSuccessPage from './pages/PlanSuccessPage';
-import PlanTelegramPage from './pages/PlanTelegramPage';
-import TelegramPage from './pages/TelegramPage';
-import AdminUsersPage from './pages/AdminUsersPage';
-import AdminHelpPage from './pages/AdminHelpPage';
-import TermsPage from './pages/TermsPage';
-import PrivacyPage from './pages/PrivacyPage';
+import { StrictMode } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RouterProvider, createRouter, createRoute, createRootRoute, Outlet } from '@tanstack/react-router';
+import { RouteTransitionProvider } from './hooks/useRouteTransition';
+import RouteTransitionOverlay from './components/RouteTransitionOverlay';
+import { Toaster } from '@/components/ui/sonner';
 import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
-import RouteTransitionOverlay from './components/RouteTransitionOverlay';
-import { RouteTransitionProvider } from './hooks/useRouteTransition';
-import { Toaster } from '@/components/ui/sonner';
+import LandingPage from './pages/LandingPage';
+import AccessPlansPage from './pages/AccessPlansPage';
+import PlanSignupPage from './pages/PlanSignupPage';
+import PlanLoginPage from './pages/PlanLoginPage';
+import PlanPostSignupPage from './pages/PlanPostSignupPage';
+import PlanProfitPage from './pages/PlanProfitPage';
+import ProductsPage from './pages/ProductsPage';
+import TelegramPage from './pages/TelegramPage';
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
+import AdminUsersPage from './pages/AdminUsersPage';
 
-// Layout component that wraps all pages
-function Layout() {
-  const routerState = useRouterState();
-  const currentPath = routerState.location.pathname;
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
+// Layout component with route transition support and global vector background
+function RootLayout() {
   return (
     <RouteTransitionProvider>
-      <div className="min-h-screen flex flex-col">
-        <SiteHeader />
-        <main className="flex-1">
-          <div key={currentPath} className="animate-fade-in">
+      <div className="min-h-screen flex flex-col overflow-x-hidden app-vector-bg">
+        <div className="relative z-10 min-h-screen flex flex-col">
+          <SiteHeader />
+          <main className="flex-1">
             <Outlet />
-          </div>
-        </main>
-        <SiteFooter />
-        <Toaster />
-        <RouteTransitionOverlay />
+          </main>
+          <SiteFooter />
+        </div>
       </div>
+      <RouteTransitionOverlay />
     </RouteTransitionProvider>
   );
 }
 
-// Define routes
+// Root route with layout
 const rootRoute = createRootRoute({
-  component: Layout,
+  component: RootLayout,
 });
 
+// Define routes
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
@@ -55,46 +63,40 @@ const plansRoute = createRoute({
   component: AccessPlansPage,
 });
 
-const productsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/products',
-  component: ProductsPage,
-});
-
 const planSignupRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/plans/signup',
   component: PlanSignupPage,
 });
 
-const planSuccessRoute = createRoute({
+const planLoginRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/plans/success',
-  component: PlanSuccessPage,
+  path: '/plans/login',
+  component: PlanLoginPage,
 });
 
-const planTelegramRoute = createRoute({
+const planPostSignupRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/plans/telegram',
-  component: PlanTelegramPage,
+  path: '/plans/post-signup',
+  component: PlanPostSignupPage,
+});
+
+const planProfitRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/plans/profit',
+  component: PlanProfitPage,
+});
+
+const productsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/products',
+  component: ProductsPage,
 });
 
 const telegramRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/telegram',
   component: TelegramPage,
-});
-
-const usersRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/users',
-  component: AdminUsersPage,
-});
-
-const adminHelpRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/admin-help',
-  component: AdminHelpPage,
 });
 
 const termsRoute = createRoute({
@@ -109,33 +111,44 @@ const privacyRoute = createRoute({
   component: PrivacyPage,
 });
 
-// Create the route tree
+const usersRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/users',
+  component: AdminUsersPage,
+});
+
+// Create route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
   plansRoute,
-  productsRoute,
   planSignupRoute,
-  planSuccessRoute,
-  planTelegramRoute,
+  planLoginRoute,
+  planPostSignupRoute,
+  planProfitRoute,
+  productsRoute,
   telegramRoute,
-  usersRoute,
-  adminHelpRoute,
   termsRoute,
   privacyRoute,
+  usersRoute,
 ]);
 
-// Create the router
+// Create router
 const router = createRouter({ routeTree });
 
-// Register router for type safety
+// Register router type
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router;
   }
 }
 
-function App() {
-  return <RouterProvider router={router} />;
+export default function App() {
+  return (
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <Toaster />
+      </QueryClientProvider>
+    </StrictMode>
+  );
 }
-
-export default App;

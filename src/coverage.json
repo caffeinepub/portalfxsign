@@ -1,71 +1,50 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-06T10:57:52.617Z",
+  "generatedAt": "2026-02-06T17:58:31.286Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 3,
+    "total": 2,
+    "implemented": 2,
     "items": [
       {
-        "id": "REQ-46",
-        "summary": "Add a new admin-help page/route that explains how the website owner can access the admin-only user information using Internet Identity, including a clear link to the Internet Identity management page and step-by-step instructions in English.",
+        "id": "REQ-93",
+        "summary": "Generate a new vector-based abstract background design that transitions from green to teal and is visually pronounced.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/AdminHelpPage.tsx",
-          "frontend/src/App.tsx",
-          "frontend/src/components/AdminAccessGate.tsx"
+          "frontend/public/assets/generated/telsfx-abstract-bg.dim_1920x1080.svg"
         ],
         "matchedFiles": [
-          "frontend/src/pages/AdminHelpPage.tsx",
-          "frontend/src/App.tsx",
-          "frontend/src/components/AdminAccessGate.tsx"
+          "frontend/public/assets/generated/telsfx-abstract-bg.dim_1920x1080.svg"
         ]
       },
       {
-        "id": "REQ-47",
-        "summary": "Update the admin access gating UI so that when a logged-in user is denied admin access, the page displays the currently authenticated Internet Identity Principal and clear instructions that the website owner must set this Principal as the configured admin Principal for access.",
+        "id": "REQ-94",
+        "summary": "Replace the existing global dual-layer green gradient background (currently applied via the `gradient-bg-right` class and its `::before/::after` layers) with the new green-to-teal vector background, and apply it globally across all routes/pages from a single global place (global CSS and/or the root layout container).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/AdminAccessGate.tsx",
-          "frontend/src/config/admin.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/AdminAccessGate.tsx",
-          "frontend/src/config/admin.ts"
-        ]
-      },
-      {
-        "id": "REQ-48",
-        "summary": "Ensure the owner-only admin page for viewing stored user accounts remains available as the private destination for submitted user information, and ensure it is accessible only after Internet Identity login and admin authorization.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/AdminUsersPage.tsx",
-          "frontend/src/components/AdminAccessGate.tsx",
+          "frontend/src/index.css",
           "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/AdminUsersPage.tsx",
-          "frontend/src/components/AdminAccessGate.tsx",
+          "frontend/src/index.css",
           "frontend/src/App.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
-    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/public/assets/generated/telsfx-abstract-bg.dim_1920x1080.png",
+    "frontend/public/assets/generated/telsfx-abstract-bg.dim_1920x1080.svg",
     "frontend/src/App.tsx",
-    "frontend/src/components/AdminAccessGate.tsx",
-    "frontend/src/config/admin.ts",
-    "frontend/src/pages/AdminHelpPage.tsx",
-    "frontend/src/pages/AdminUsersPage.tsx",
+    "frontend/src/index.css",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

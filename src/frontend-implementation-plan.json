@@ -1,81 +1,42 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Admin help route and clearer Internet Identity principal visibility for admin access",
+  "title": "Global green-to-teal abstract vector background replacing dual green gradients",
   "requirements": [
     {
-      "id": "REQ-46",
-      "summary": "Add a private admin-help route with English Internet Identity instructions and a visible link to the Internet Identity management page.",
+      "id": "REQ-93",
+      "summary": "Add a new original, pronounced green-to-teal abstract vector background SVG asset for global use.",
       "acceptanceCriteria": [
-        "A new route exists (not linked from the public header) that displays a professional help page for the owner/admin explaining how to access the admin-only user list using Internet Identity.",
-        "The page includes a clearly visible external link to https://id.ai/manage (or the configured Internet Identity provider URL if already present in configuration).",
-        "All user-facing text on this page is in English.",
-        "Navigating to this page uses the existing global route-transition UX (spinner + fade-in)."
+        "A new vector background asset (SVG) exists under `frontend/public/assets/generated/` and visually transitions from green to teal with prominent abstract shapes.",
+        "The background is original and does not use any third-party branding, logos, or copyrighted artwork."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/AdminHelpPage.tsx",
+          "path": "frontend/public/assets/generated/telsfx-abstract-bg.dim_1920x1080.svg",
           "operation": "create",
-          "description": "Create an English-only admin help page that explains how to (1) log in with Internet Identity, (2) find/copy the authenticated Principal, and (3) set it as the configured admin principal; include a clearly visible external link to https://id.ai/manage (or the configured provider URL if the app already exposes one). Use shadcn-ui components (e.g., Button) for consistent styling; verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register a new private route (e.g., /admin-help) pointing to AdminHelpPage, ensuring it participates in existing layout fade-in behavior and is not added to public header navigation."
-        },
-        {
-          "path": "frontend/src/components/AdminAccessGate.tsx",
-          "operation": "modify",
-          "description": "Add an in-app navigation action (button) to the new /admin-help route using the existing route-transition system so navigation shows the spinner + fade-in; do not add any public header link. Use shadcn-ui Button for the action; verify the component's usage instructions before implementing."
+          "description": "Create the original abstract vector background SVG asset with a pronounced green-to-teal transition and prominent flowing/geometric layers (as specified in imageRequirements). Ensure no third-party branding/logos/copyrighted artwork is included."
         }
       ]
     },
     {
-      "id": "REQ-47",
-      "summary": "Enhance the admin access denied UI to show the authenticated Principal and clear English instructions for configuring the admin Principal.",
+      "id": "REQ-94",
+      "summary": "Replace the existing global dual-layer green gradient background with the new SVG background applied globally from a single shared location, without affecting routes or transitions.",
       "acceptanceCriteria": [
-        "When a user is authenticated but not an admin, the Access Denied view shows the user’s current Principal as text (e.g., \"Your Principal: …\").",
-        "The Access Denied view includes English instructions telling the owner where the admin Principal is configured (frontend config) and that it must match the shown Principal.",
-        "If the identity is not available, the UI does not crash and does not display a misleading principal value.",
-        "The Admin Login flow and denial screen continue to participate in the existing global route-transition UX for any in-app navigation actions."
+        "The previous dual-gradient effect is no longer visible anywhere in the app (no remaining `::before/::after` radial gradient layers for `gradient-bg-right`).",
+        "All pages/routes show the new vector green-to-teal background consistently, without per-page modifications.",
+        "Foreground content (header, pages, footer, cards) remains readable and layered above the background (no interference with clicks/scrolling).",
+        "No existing routes, navigation behavior, or route-transition spinner/fade behavior is changed by this background update."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/AdminAccessGate.tsx",
+          "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Update the authenticated-but-not-admin view to (1) safely derive and display identity.getPrincipal().toString() only when available, (2) show English instructions that the admin principal is configured in frontend/src/config/admin.ts and must match the shown Principal, and (3) provide an in-app button to /admin-help using the existing route-transition UX. Use shadcn-ui components (e.g., Button) for consistent UI; verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/config/admin.ts",
-          "operation": "modify",
-          "description": "Clarify English comments/documentation around ADMIN_PRINCIPAL so it explicitly references that the value must match the authenticated Internet Identity Principal shown on the Access Denied screen and/or Admin Help page."
-        }
-      ]
-    },
-    {
-      "id": "REQ-48",
-      "summary": "Keep the admin user list page available as the private destination for stored accounts and ensure the UI remains protected and avoids displaying sensitive fields.",
-      "acceptanceCriteria": [
-        "The admin-only user list route (e.g., /users) remains protected so anonymous users are prompted to log in and non-admin authenticated users are denied.",
-        "After successful signup flows already in the app, created accounts continue to be persisted in the backend and appear in the admin user list (name + email at minimum).",
-        "The backend admin-only listing API continues to reject non-admin callers.",
-        "The admin user list UI does not display sensitive fields (e.g., passwords) even if the backend record contains them."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/AdminUsersPage.tsx",
-          "operation": "modify",
-          "description": "Confirm the user list UI displays only non-sensitive fields (fullName, email, planId, created) and does not render passwordHash or other sensitive fields; optionally add a brief English note in the page UI indicating sensitive fields are never shown."
-        },
-        {
-          "path": "frontend/src/components/AdminAccessGate.tsx",
-          "operation": "modify",
-          "description": "Ensure the protected /users route continues to prompt login for anonymous users and shows a clear denial state for non-admins without breaking route transition behavior for any in-app navigation actions. Use shadcn-ui Button where actions are provided; verify the component's usage instructions before implementing."
+          "description": "Remove the existing `.gradient-bg-right` `::before/::after` dual radial gradient definitions (and any related custom properties if unused). Add a single global background class (e.g., `.app-vector-bg`) that applies the new SVG from `frontend/public/assets/generated/telsfx-abstract-bg.dim_1920x1080.svg` as a fixed, non-interactive background layer (pointer-events none) behind all content (safe z-index/positioning) so readability and click/scroll interactions are preserved."
         },
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Verify the existing /users route remains registered and unchanged in visibility (not added to public header), and that /users continues to render the protected AdminUsersPage under the existing global layout."
+          "description": "Update the root layout container to stop using `gradient-bg-right` and instead use the new global background class (e.g., `app-vector-bg`) so the SVG background is applied across all routes/pages from one shared place without changing routing or route-transition behavior."
         }
       ]
     }

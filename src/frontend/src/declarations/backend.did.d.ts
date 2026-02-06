@@ -17,7 +17,12 @@ export interface Account {
   'email' : string,
   'passwordHash' : string,
 }
+export type AdminLoginResponse = { 'failure' : string } |
+  { 'success' : SessionToken };
+export type SessionToken = bigint;
 export type Time = bigint;
+export type UserLoginResponse = { 'failure' : string } |
+  { 'success' : [] | [string] };
 export interface UserProfile { 'name' : string }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
@@ -33,9 +38,13 @@ export interface _SERVICE {
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'healthCheck' : ActorMethod<[], { 'status' : string, 'timestamp' : Time }>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'listAllAccounts' : ActorMethod<[], Array<Account>>,
+  'login' : ActorMethod<[string, string], UserLoginResponse>,
+  'loginAdmin' : ActorMethod<[string, string], AdminLoginResponse>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'validateAdminSession' : ActorMethod<[SessionToken], boolean>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];
