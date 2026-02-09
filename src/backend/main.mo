@@ -4,9 +4,9 @@ import Time "mo:core/Time";
 import Runtime "mo:core/Runtime";
 import Iter "mo:core/Iter";
 import Nat "mo:core/Nat";
-import AccessControl "authorization/access-control";
-import MixinAuthorization "authorization/MixinAuthorization";
 import Principal "mo:core/Principal";
+import MixinAuthorization "authorization/MixinAuthorization";
+import AccessControl "authorization/access-control";
 
 actor {
   type Account = {
@@ -35,6 +35,13 @@ actor {
     name : Text;
   };
 
+  public type InternetIdentityLoginInfo = {
+    principal : Principal;
+    logins : Nat;
+    firstLogin : Time.Time;
+    lastLogin : Time.Time;
+  };
+
   // Persistent state variables
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
@@ -46,6 +53,7 @@ actor {
   // let adminPasswordHash: EncryptedPassword = encryptionFunction("adminPasswordHash");
   let sessions = Map.empty<SessionToken, Text>();
   let userProfiles = Map.empty<Principal, UserProfile>();
+  let internetIdentityLogins = Map.empty<Principal, InternetIdentityLoginInfo>();
 
   // Admin authentication (no authorization needed, this is the login endpoint)
   public shared ({ caller }) func loginAdmin(email : Text, password : Text) : async AdminLoginResponse {
@@ -80,6 +88,32 @@ actor {
         } else {
           #failure("Invalid email or password. Please try again.");
         };
+      };
+    };
+  };
+
+  // Records an Internet Identity login for the caller
+  // SECURITY: Uses caller from message context instead of accepting principal parameter
+  // This prevents users from recording logins for other principals
+  public shared ({ caller }) func recordInternetIdentityLogin() : async () {
+    switch (internetIdentityLogins.get(caller)) {
+      case (null) {
+        let newLoginInfo : InternetIdentityLoginInfo = {
+          principal = caller;
+          logins = 1;
+          firstLogin = Time.now();
+          lastLogin = Time.now();
+        };
+        internetIdentityLogins.add(caller, newLoginInfo);
+      };
+      case (?existingLoginInfo) {
+        let updatedLoginInfo : InternetIdentityLoginInfo = {
+          principal = caller;
+          logins = existingLoginInfo.logins + 1;
+          firstLogin = existingLoginInfo.firstLogin;
+          lastLogin = Time.now();
+        };
+        internetIdentityLogins.add(caller, updatedLoginInfo);
       };
     };
   };
@@ -144,6 +178,14 @@ actor {
       Runtime.trap("Unauthorized: Only admins can perform this action");
     };
     accounts.values().toArray();
+  };
+
+  // Admin-only endpoint to get all Internet Identity logins
+  public query ({ caller }) func listInternetIdentityLogins() : async [InternetIdentityLoginInfo] {
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only admins can perform this action");
+    };
+    internetIdentityLogins.values().toArray();
   };
 
   // Returns the next unique session token

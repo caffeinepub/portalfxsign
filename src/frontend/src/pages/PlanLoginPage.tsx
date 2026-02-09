@@ -2,37 +2,48 @@ import { useState, useEffect, FormEvent } from 'react';
 import { useSearch } from '@tanstack/react-router';
 import { useRouteTransition } from '../hooks/useRouteTransition';
 import { useLogin } from '../hooks/useQueries';
+import { useActor } from '../hooks/useActor';
 import GreenSectionCard from '../components/GreenSectionCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 
 export default function PlanLoginPage() {
   const { startTransition } = useRouteTransition();
   const search = useSearch({ strict: false }) as { plan?: string };
   const loginMutation = useLogin();
+  const { actor, isFetching: actorInitializing } = useActor();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [validationError, setValidationError] = useState('');
 
-  // Enforce that this page is only reachable from plan cards or signup
+  // Relax the guard to allow legitimate entry paths
   useEffect(() => {
     const fromPlans = sessionStorage.getItem('loginFromPlans');
     const fromSignup = sessionStorage.getItem('loginFromSignup');
     
+    // Only redirect if neither flag is set (prevents direct URL access)
+    // But allow navigation from plan cards and signup flow
     if (fromPlans !== 'true' && fromSignup !== 'true') {
-      // Redirect back to plans if not accessed from plan cards or signup
-      startTransition('/plans');
+      // Check if we have a plan in the URL, which indicates a legitimate entry
+      if (!search.plan) {
+        startTransition('/plans');
+      }
     }
-    // Don't clear flags here - we need them for the profit page navigation
-  }, [startTransition]);
+  }, [startTransition, search.plan]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setValidationError('');
+
+    // Guard: Prevent submission if actor is not ready
+    if (!actor) {
+      setValidationError('Service is initializing. Please wait a moment.');
+      return;
+    }
 
     // Client-side validation
     if (!email.trim()) {
@@ -80,6 +91,7 @@ export default function PlanLoginPage() {
 
   const isSubmitting = loginMutation.isPending;
   const backendError = loginMutation.error?.message;
+  const isActorReady = !!actor && !actorInitializing;
 
   return (
     <div className="w-full py-20 px-4">
@@ -94,6 +106,14 @@ export default function PlanLoginPage() {
             </p>
           </div>
 
+          {/* Actor Initialization Status */}
+          {actorInitializing && (
+            <Alert className="mb-4">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <AlertDescription>Initializing service, please wait...</AlertDescription>
+            </Alert>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email Field */}
             <div className="space-y-2">
@@ -104,7 +124,7 @@ export default function PlanLoginPage() {
                 placeholder="your.email@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                disabled={isSubmitting}
+                disabled={isSubmitting || !isActorReady}
                 required
               />
             </div>
@@ -118,7 +138,7 @@ export default function PlanLoginPage() {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                disabled={isSubmitting}
+                disabled={isSubmitting || !isActorReady}
                 required
               />
             </div>
@@ -131,8 +151,8 @@ export default function PlanLoginPage() {
               </Alert>
             )}
 
-            {/* Backend Error */}
-            {backendError && (
+            {/* Backend Error - only show when not submitting */}
+            {backendError && !isSubmitting && (
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>{backendError}</AlertDescription>
@@ -144,9 +164,18 @@ export default function PlanLoginPage() {
               type="submit"
               size="lg"
               className="w-full"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isActorReady}
             >
-              {isSubmitting ? 'Logging in...' : 'Log In'}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Logging in...
+                </>
+              ) : !isActorReady ? (
+                'Initializing...'
+              ) : (
+                'Log In'
+              )}
             </Button>
           </form>
 

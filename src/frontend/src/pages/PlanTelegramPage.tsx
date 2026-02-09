@@ -9,7 +9,7 @@ export default function PlanTelegramPage() {
     <div className="w-full py-20 px-4">
       <div className="container mx-auto max-w-2xl">
         <GreenSectionCard className="p-8 md:p-12 text-center">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/30 dark:to-teal-900/30 flex items-center justify-center">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
             <MessageCircle className="w-12 h-12 text-emerald-600 dark:text-emerald-400" />
           </div>
 

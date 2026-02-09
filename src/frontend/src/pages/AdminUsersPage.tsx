@@ -1,11 +1,11 @@
-import { useListAllAccounts } from '../hooks/useQueries';
+import { useListAllAccounts, useListInternetIdentityLogins } from '../hooks/useQueries';
 import { useRequireAdminSession } from '../hooks/useAdminSession';
 import { useRouteTransition } from '../hooks/useRouteTransition';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Loader2, Users, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Loader2, Users, ShieldCheck, AlertCircle, KeyRound } from 'lucide-react';
 
 export default function AdminUsersPage() {
   const { hasToken, isValid, isLoading: sessionLoading } = useRequireAdminSession();
@@ -54,33 +54,25 @@ export default function AdminUsersPage() {
 }
 
 function AdminUsersContent() {
-  const { data: accounts, isLoading, error } = useListAllAccounts();
+  const { data: accounts, isLoading: accountsLoading, error: accountsError } = useListAllAccounts();
+  const { data: iiLogins, isLoading: iiLoginsLoading, error: iiLoginsError } = useListInternetIdentityLogins();
+
+  const isLoading = accountsLoading || iiLoginsLoading;
 
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-12">
         <div className="flex flex-col items-center justify-center min-h-[40vh] space-y-4">
           <Loader2 className="w-12 h-12 animate-spin text-emerald-600" />
-          <p className="text-muted-foreground">Loading user accounts...</p>
+          <p className="text-muted-foreground">Loading user data...</p>
         </div>
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-12">
-        <Alert variant="destructive">
-          <AlertDescription>
-            Failed to load user accounts. Please try again later.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 space-y-8">
+      {/* Registered Users Section */}
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
@@ -104,50 +96,124 @@ function AdminUsersContent() {
             </AlertDescription>
           </Alert>
 
-          {!accounts || accounts.length === 0 ? (
+          {accountsError ? (
+            <Alert variant="destructive">
+              <AlertDescription>
+                Failed to load user accounts. Please try again later.
+              </AlertDescription>
+            </Alert>
+          ) : !accounts || accounts.length === 0 ? (
             <div className="text-center py-12">
               <Users className="w-16 h-16 mx-auto text-muted-foreground/50 mb-4" />
               <p className="text-muted-foreground">No user accounts found</p>
             </div>
           ) : (
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Full Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Plan</TableHead>
-                    <TableHead>Created</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {accounts.map((account, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium">{account.fullName}</TableCell>
-                      <TableCell>{account.email}</TableCell>
-                      <TableCell>
-                        {account.planId ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
-                            {account.planId}
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground text-sm">No plan</span>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {new Date(Number(account.created) / 1000000).toLocaleDateString()}
-                      </TableCell>
+            <>
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Full Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Plan</TableHead>
+                      <TableHead>Created</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {accounts.map((account, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="font-medium">{account.fullName}</TableCell>
+                        <TableCell>{account.email}</TableCell>
+                        <TableCell>
+                          {account.planId ? (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+                              {account.planId}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground text-sm">No plan</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {new Date(Number(account.created) / 1000000).toLocaleDateString()}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+              <div className="mt-4 text-sm text-muted-foreground">
+                Total accounts: <strong>{accounts.length}</strong>
+              </div>
+            </>
           )}
+        </CardContent>
+      </Card>
 
-          {accounts && accounts.length > 0 && (
-            <div className="mt-4 text-sm text-muted-foreground">
-              Total accounts: <strong>{accounts.length}</strong>
+      {/* Internet Identity Logins Section */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+              <KeyRound className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
+            <div>
+              <CardTitle className="text-2xl">Internet Identity Logins</CardTitle>
+              <CardDescription>
+                View all users who have logged in with Internet Identity
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {iiLoginsError ? (
+            <Alert variant="destructive">
+              <AlertDescription>
+                Failed to load Internet Identity logins. Please try again later.
+              </AlertDescription>
+            </Alert>
+          ) : !iiLogins || iiLogins.length === 0 ? (
+            <div className="text-center py-12">
+              <KeyRound className="w-16 h-16 mx-auto text-muted-foreground/50 mb-4" />
+              <p className="text-muted-foreground">No Internet Identity logins recorded yet</p>
+            </div>
+          ) : (
+            <>
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Principal ID</TableHead>
+                      <TableHead>Login Count</TableHead>
+                      <TableHead>First Login</TableHead>
+                      <TableHead>Last Login</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {iiLogins.map((login, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="font-mono text-xs">
+                          {login.principal.toString()}
+                        </TableCell>
+                        <TableCell>
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                            {login.logins.toString()}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {new Date(Number(login.firstLogin) / 1000000).toLocaleString()}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {new Date(Number(login.lastLogin) / 1000000).toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+              <div className="mt-4 text-sm text-muted-foreground">
+                Total Internet Identity users: <strong>{iiLogins.length}</strong>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>

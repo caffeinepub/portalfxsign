@@ -6,7 +6,7 @@ export function normalizeBackendError(error: unknown): string {
   const errorString = String(error);
   const errorMessage = error instanceof Error ? error.message : errorString;
 
-  // FIRST: Check for known business logic errors from backend and pass through
+  // FIRST: Check for known business logic errors from backend and pass through exactly
   // This must come before replica rejection checks to preserve user-facing messages
   if (
     errorMessage.includes('Invalid email or password') ||
@@ -14,11 +14,7 @@ export function normalizeBackendError(error: unknown): string {
     errorMessage.includes('Invalid email') ||
     errorMessage.includes('must be at least')
   ) {
-    // Extract the clean message if it's wrapped in error context
-    const match = errorMessage.match(/(Invalid email or password[^.]*\.)/i);
-    if (match) {
-      return match[1];
-    }
+    // Return the exact message without modification
     return errorMessage;
   }
 
@@ -26,7 +22,7 @@ export function normalizeBackendError(error: unknown): string {
   if (
     errorMessage.includes('IC0508') ||
     errorMessage.includes('is stopped') ||
-    errorMessage.includes('Canister') && errorMessage.includes('stopped')
+    (errorMessage.includes('Canister') && errorMessage.includes('stopped'))
   ) {
     return 'Service is temporarily unavailable. Please try again shortly.';
   }

@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider, createRouter, createRoute, createRootRoute, Outlet } from '@tanstack/react-router';
 import { RouteTransitionProvider } from './hooks/useRouteTransition';
 import RouteTransitionOverlay from './components/RouteTransitionOverlay';
+import InternetIdentityLoginTracker from './components/InternetIdentityLoginTracker';
 import { Toaster } from '@/components/ui/sonner';
 import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
@@ -27,18 +28,17 @@ const queryClient = new QueryClient({
   },
 });
 
-// Layout component with route transition support and global vector background
+// Layout component with route transition support on plain white background
 function RootLayout() {
   return (
     <RouteTransitionProvider>
-      <div className="min-h-screen flex flex-col overflow-x-hidden app-vector-bg">
-        <div className="relative z-10 min-h-screen flex flex-col">
-          <SiteHeader />
-          <main className="flex-1">
-            <Outlet />
-          </main>
-          <SiteFooter />
-        </div>
+      <InternetIdentityLoginTracker />
+      <div className="min-h-screen flex flex-col overflow-x-hidden bg-white">
+        <SiteHeader />
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        <SiteFooter />
       </div>
       <RouteTransitionOverlay />
     </RouteTransitionProvider>

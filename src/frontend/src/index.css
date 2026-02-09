@@ -80,52 +80,19 @@
     
     body {
         @apply bg-background text-foreground;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-        font-weight: 700;
-        letter-spacing: -0.02em;
     }
 }
 
-/* Custom scrollbar styling */
 @layer utilities {
-    .scrollbar-thin::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+    .card-divider {
+        @apply bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent dark:via-emerald-500/50;
     }
 
-    .scrollbar-thin::-webkit-scrollbar-track {
-        @apply bg-muted/30;
-        border-radius: 4px;
+    .card-divider-horizontal {
+        @apply h-px w-full;
     }
 
-    .scrollbar-thin::-webkit-scrollbar-thumb {
-        @apply bg-muted-foreground/30 hover:bg-muted-foreground/50;
-        border-radius: 4px;
-    }
-    
-    /* Global abstract vector background */
-    .app-vector-bg {
-        position: relative;
-    }
-    
-    .app-vector-bg::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: url('/assets/generated/telsfx-abstract-bg.dim_1920x1080.svg');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        pointer-events: none;
-        z-index: 0;
-        opacity: 0.95;
+    .card-divider-vertical {
+        @apply w-px h-full;
     }
 }

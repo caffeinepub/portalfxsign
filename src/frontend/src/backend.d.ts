@@ -22,6 +22,12 @@ export interface Account {
     passwordHash: string;
 }
 export type Time = bigint;
+export interface InternetIdentityLoginInfo {
+    principal: Principal;
+    logins: bigint;
+    firstLogin: Time;
+    lastLogin: Time;
+}
 export type SessionToken = bigint;
 export type AdminLoginResponse = {
     __kind__: "failure";
@@ -53,8 +59,10 @@ export interface backendInterface {
     }>;
     isCallerAdmin(): Promise<boolean>;
     listAllAccounts(): Promise<Array<Account>>;
+    listInternetIdentityLogins(): Promise<Array<InternetIdentityLoginInfo>>;
     login(email: string, password: string): Promise<UserLoginResponse>;
     loginAdmin(email: string, password: string): Promise<AdminLoginResponse>;
+    recordInternetIdentityLogin(): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     validateAdminSession(sessionId: SessionToken): Promise<boolean>;
 }

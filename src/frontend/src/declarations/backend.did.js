@@ -22,6 +22,12 @@ export const Account = IDL.Record({
   'email' : IDL.Text,
   'passwordHash' : IDL.Text,
 });
+export const InternetIdentityLoginInfo = IDL.Record({
+  'principal' : IDL.Principal,
+  'logins' : IDL.Nat,
+  'firstLogin' : Time,
+  'lastLogin' : Time,
+});
 export const UserLoginResponse = IDL.Variant({
   'failure' : IDL.Text,
   'success' : IDL.Opt(IDL.Text),
@@ -59,8 +65,14 @@ export const idlService = IDL.Service({
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'listAllAccounts' : IDL.Func([], [IDL.Vec(Account)], ['query']),
+  'listInternetIdentityLogins' : IDL.Func(
+      [],
+      [IDL.Vec(InternetIdentityLoginInfo)],
+      ['query'],
+    ),
   'login' : IDL.Func([IDL.Text, IDL.Text], [UserLoginResponse], []),
   'loginAdmin' : IDL.Func([IDL.Text, IDL.Text], [AdminLoginResponse], []),
+  'recordInternetIdentityLogin' : IDL.Func([], [], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   'validateAdminSession' : IDL.Func([SessionToken], [IDL.Bool], []),
 });
@@ -81,6 +93,12 @@ export const idlFactory = ({ IDL }) => {
     'fullName' : IDL.Text,
     'email' : IDL.Text,
     'passwordHash' : IDL.Text,
+  });
+  const InternetIdentityLoginInfo = IDL.Record({
+    'principal' : IDL.Principal,
+    'logins' : IDL.Nat,
+    'firstLogin' : Time,
+    'lastLogin' : Time,
   });
   const UserLoginResponse = IDL.Variant({
     'failure' : IDL.Text,
@@ -119,8 +137,14 @@ export const idlFactory = ({ IDL }) => {
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'listAllAccounts' : IDL.Func([], [IDL.Vec(Account)], ['query']),
+    'listInternetIdentityLogins' : IDL.Func(
+        [],
+        [IDL.Vec(InternetIdentityLoginInfo)],
+        ['query'],
+      ),
     'login' : IDL.Func([IDL.Text, IDL.Text], [UserLoginResponse], []),
     'loginAdmin' : IDL.Func([IDL.Text, IDL.Text], [AdminLoginResponse], []),
+    'recordInternetIdentityLogin' : IDL.Func([], [], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
     'validateAdminSession' : IDL.Func([SessionToken], [IDL.Bool], []),
   });

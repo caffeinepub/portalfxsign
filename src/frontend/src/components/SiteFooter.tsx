@@ -1,6 +1,5 @@
 import { useRouteTransition } from '../hooks/useRouteTransition';
 import { Button } from '@/components/ui/button';
-import { Heart } from 'lucide-react';
 
 export default function SiteFooter() {
   const { startTransition } = useRouteTransition();
@@ -94,17 +93,7 @@ export default function SiteFooter() {
 
         {/* Copyright */}
         <div className="text-center text-sm text-muted-foreground">
-          <p className="flex items-center justify-center gap-1">
-            © 2026. Built with <Heart className="w-4 h-4 text-red-500 fill-red-500" /> using{' '}
-            <a 
-              href="https://caffeine.ai" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-emerald-600 dark:text-emerald-400 hover:underline"
-            >
-              caffeine.ai
-            </a>
-          </p>
+          <p>© 2026</p>
         </div>
       </div>
     </footer>

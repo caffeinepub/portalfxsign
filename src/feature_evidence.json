@@ -2,9 +2,13 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-generate-a-new-vector-based-abstract-background-design-that-transitions-from-green-to-teal-and-is-visually-pronounced",
-      "featureTitle": "Generate a new vector-based abstract background design that transitions from green to teal and is visually pronounced.",
-      "files": [],
+      "featureId": "feature-implement-a-frontend-internet-identity-login-tracker-that-calls-the-backend-tracking-method-once-per-internet-identity-login-session-without-modifying-any-immutable-files",
+      "featureTitle": "Implement a frontend Internet Identity login tracker that calls the backend tracking method once per Internet Identity login session, without modifying any immutable files.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/InternetIdentityLoginTracker.tsx",
+        "frontend/src/hooks/useInternetIdentityLoginTracker.ts"
+      ],
       "components": [
         "core-infrastructure@1.0.2",
         "shadcn-ui@1.0.0",
@@ -14,16 +18,16 @@
         "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-93"
+        "REQ-3"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-replace-the-existing-global-dual-layer-green-gradient-background-currently-applied-via-the-gradient-bg-right-class-and-its-before-after-layers-with-the-new-green-to-teal-vector-background-and-apply-it-globally-across-all-routes-pages-from-a-single-global-place-global-css-and-or-the-root-layout-container",
-      "featureTitle": "Replace the existing global dual-layer green gradient background (currently applied via the `gradient-bg-right` class and its `::before/::after` layers) with the new green-to-teal vector background, and apply it globally across all routes/pages from a single global place (global CSS and/or the root layout container).",
+      "featureId": "feature-extend-the-existing-owner-admin-only-ui-to-display-a-table-of-all-internet-identity-principals-that-have-logged-in-visible-only-to-the-site-owner-admin-while-keeping-existing-site-behavior-intact",
+      "featureTitle": "Extend the existing owner/admin-only UI to display a table of all Internet Identity principals that have logged in, visible only to the site owner/admin, while keeping existing site behavior intact.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/index.css"
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/AdminUsersPage.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -34,7 +38,7 @@
         "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-94"
+        "REQ-4"
       ],
       "confidence": "high"
     }

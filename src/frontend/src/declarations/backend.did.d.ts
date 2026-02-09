@@ -19,6 +19,12 @@ export interface Account {
 }
 export type AdminLoginResponse = { 'failure' : string } |
   { 'success' : SessionToken };
+export interface InternetIdentityLoginInfo {
+  'principal' : Principal,
+  'logins' : bigint,
+  'firstLogin' : Time,
+  'lastLogin' : Time,
+}
 export type SessionToken = bigint;
 export type Time = bigint;
 export type UserLoginResponse = { 'failure' : string } |
@@ -41,8 +47,13 @@ export interface _SERVICE {
   'healthCheck' : ActorMethod<[], { 'status' : string, 'timestamp' : Time }>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'listAllAccounts' : ActorMethod<[], Array<Account>>,
+  'listInternetIdentityLogins' : ActorMethod<
+    [],
+    Array<InternetIdentityLoginInfo>
+  >,
   'login' : ActorMethod<[string, string], UserLoginResponse>,
   'loginAdmin' : ActorMethod<[string, string], AdminLoginResponse>,
+  'recordInternetIdentityLogin' : ActorMethod<[], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'validateAdminSession' : ActorMethod<[SessionToken], boolean>,
 }

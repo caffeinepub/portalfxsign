@@ -10,7 +10,7 @@ export default function GreenSectionCard({ children, className, ...props }: Gree
   return (
     <Card 
       className={cn(
-        'bg-gradient-to-br from-emerald-50/80 to-teal-50/50 dark:from-emerald-950/30 dark:to-teal-950/20',
+        'bg-emerald-50/95 dark:bg-emerald-950/95',
         'border-emerald-200/50 dark:border-emerald-800/30',
         'shadow-sm hover:shadow-md transition-shadow duration-300',
         className

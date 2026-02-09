@@ -1,5 +1,6 @@
 import { useRouteTransition } from '../hooks/useRouteTransition';
 import GreenSectionCard from '../components/GreenSectionCard';
+import CardDivider from '../components/CardDivider';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 
@@ -39,6 +40,8 @@ export default function AccessPlansPage() {
               <p className="text-muted-foreground text-sm">Perfect for those starting their partnership journey</p>
             </div>
 
+            <CardDivider className="mb-6" />
+
             <div className="mb-6">
               <div className="flex items-baseline gap-2 mb-1">
                 <span className="text-4xl font-bold text-emerald-600 dark:text-emerald-400">$300</span>
@@ -49,6 +52,8 @@ export default function AccessPlansPage() {
                 <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">$5,000</p>
               </div>
             </div>
+
+            <CardDivider className="mb-6" />
 
             <div className="space-y-3 mb-6 flex-1">
               <div className="flex items-start gap-2">
@@ -64,6 +69,8 @@ export default function AccessPlansPage() {
                 <span className="text-sm text-muted-foreground">Educational materials</span>
               </div>
             </div>
+
+            <CardDivider className="mb-6" />
 
             <Button 
               size="lg" 
@@ -99,6 +106,8 @@ export default function AccessPlansPage() {
               <p className="text-muted-foreground text-sm">For serious partners seeking enhanced opportunities</p>
             </div>
 
+            <CardDivider className="mb-6" />
+
             <div className="mb-6">
               <div className="flex items-baseline gap-2 mb-1">
                 <span className="text-4xl font-bold text-emerald-600 dark:text-emerald-400">$1,000</span>
@@ -109,6 +118,8 @@ export default function AccessPlansPage() {
                 <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">$10,000</p>
               </div>
             </div>
+
+            <CardDivider className="mb-6" />
 
             <div className="space-y-3 mb-6 flex-1">
               <div className="flex items-start gap-2">
@@ -128,6 +139,8 @@ export default function AccessPlansPage() {
                 <span className="text-sm text-muted-foreground">Advanced analytics dashboard</span>
               </div>
             </div>
+
+            <CardDivider className="mb-6" />
 
             <Button 
               size="lg" 
@@ -159,6 +172,8 @@ export default function AccessPlansPage() {
               <p className="text-muted-foreground text-sm">Elite tier for maximum profit potential</p>
             </div>
 
+            <CardDivider className="mb-6" />
+
             <div className="mb-6">
               <div className="flex items-baseline gap-2 mb-1">
                 <span className="text-4xl font-bold text-emerald-600 dark:text-emerald-400">$5,000</span>
@@ -169,6 +184,8 @@ export default function AccessPlansPage() {
                 <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">$15,000</p>
               </div>
             </div>
+
+            <CardDivider className="mb-6" />
 
             <div className="space-y-3 mb-6 flex-1">
               <div className="flex items-start gap-2">
@@ -192,6 +209,8 @@ export default function AccessPlansPage() {
                 <span className="text-sm text-muted-foreground">Early access to new products</span>
               </div>
             </div>
+
+            <CardDivider className="mb-6" />
 
             <Button 
               size="lg" 

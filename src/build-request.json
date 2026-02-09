@@ -1,71 +1,113 @@
 {
   "kind": "build_request",
-  "title": "Replace dual green gradients with pronounced global green-to-teal vector abstract background",
+  "title": "Track Internet Identity logins and show owner-only list of logged-in principals",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-93",
-      "text": "Generate a new vector-based abstract background design that transitions from green to teal and is visually pronounced.",
-      "target": "frontend",
+      "id": "REQ-1",
+      "text": "Add backend support to record Internet Identity logins by principal ID whenever a user authenticates with Internet Identity.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-4",
-          "msg-5"
+          "msg-1"
         ],
         "quotes": [
-          "Create an vector-based abstract background design that gradually transitions from green to a color that looks best and it's should be added to all the pages in the website.",
-          "Teal will be okay and it's should replace the existence dual green gradient because I didn't like it and it's should be more visually pronounced."
+          "I want to be seeing all my user login info in my website after they register.",
+          "Only to me after they login yes only internet identity",
+          "Build and keep every other thing intact"
         ]
       },
       "acceptanceCriteria": [
-        "A new vector background asset (SVG) exists under `frontend/public/assets/generated/` and visually transitions from green to teal with prominent abstract shapes.",
-        "The background is original and does not use any third-party branding, logos, or copyrighted artwork."
+        "Backend exposes a new shared method that, when called by an authenticated Internet Identity user, records the caller principal ID as having logged in.",
+        "The recorded data includes at minimum: principal ID (as Principal), firstSeen timestamp, lastSeen timestamp, and a loginCount (incremented on subsequent calls).",
+        "Calling the tracking method as an anonymous principal is rejected with a clear error (trap) indicating authentication is required.",
+        "Existing backend methods and behavior (createAccount/login/listAllAccounts/admin session endpoints) remain functional and unchanged for their current callers."
       ]
     },
     {
-      "id": "REQ-94",
-      "text": "Replace the existing global dual-layer green gradient background (currently applied via the `gradient-bg-right` class and its `::before/::after` layers) with the new green-to-teal vector background, and apply it globally across all routes/pages from a single global place (global CSS and/or the root layout container).",
-      "target": "frontend",
+      "id": "REQ-2",
+      "text": "Add a backend admin-only query endpoint that returns the list of Internet Identity login records (principal IDs and associated timestamps/count), accessible only to the site owner/admin.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-4",
-          "msg-5",
-          "msg-6"
+          "msg-1"
         ],
         "quotes": [
-          "Create an vector-based abstract background design that gradually transitions from green to a color that looks best and it's should be added to all the pages in the website.",
-          "Teal will be okay and it's should replace the existence dual green gradient because I didn't like it and it's should be more visually pronounced.",
-          "Proceed"
+          "A",
+          "Only to me after they login yes only internet identity"
         ]
       },
       "acceptanceCriteria": [
-        "The previous dual-gradient effect is no longer visible anywhere in the app (no remaining `::before/::after` radial gradient layers for `gradient-bg-right`).",
-        "All pages/routes show the new vector green-to-teal background consistently, without per-page modifications.",
-        "Foreground content (header, pages, footer, cards) remains readable and layered above the background (no interference with clicks/scrolling).",
-        "No existing routes, navigation behavior, or route-transition spinner/fade behavior is changed by this background update."
+        "Backend exposes a new query method that returns a list/array of recorded Internet Identity login records.",
+        "The query enforces admin-only access using the existing authorization model in backend/main.mo (e.g., AccessControl.isAdmin).",
+        "If a non-admin calls the query, it fails with an Unauthorized error message consistent with existing patterns (trap).",
+        "Returned records include principal ID as text (or can be converted on the frontend) plus firstSeen/lastSeen and loginCount."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Implement a frontend Internet Identity login tracker that calls the backend tracking method once per Internet Identity login session, without modifying any immutable files.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Only internet identity",
+          "Build and keep every other thing intact"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A new non-immutable component/hook is added that observes the current Internet Identity principal (via existing hooks) and triggers a backend call to record the login when the principal becomes non-anonymous.",
+        "The tracker avoids spamming: for the same principal it records at most once per browser session (e.g., using sessionStorage) unless the user logs out and logs back in.",
+        "The tracker does not block navigation or disrupt existing pages if the tracking call fails (fail silently or show only a console warning).",
+        "No edits are made to any paths listed in frontend.immutablePaths."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Extend the existing owner/admin-only UI to display a table of all Internet Identity principals that have logged in, visible only to the site owner/admin, while keeping existing site behavior intact.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "you (the site owner) should be able to see a list of every user who has logged in, identified by their principal ID",
+          "Build and keep every other thing intact"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The existing protected admin area at /users continues to work as it currently does.",
+        "The /users admin page adds a new section (or a clear toggle) that shows the Internet Identity login list returned by the new backend query.",
+        "The Internet Identity login list displays at least: principal ID, firstSeen, lastSeen, and loginCount, with sensible formatting for timestamps.",
+        "If the viewer is not authorized, the page continues to show an access denied experience and does not reveal principal IDs.",
+        "All user-facing text for the new section is in English."
       ]
     }
   ],
   "constraints": [
-    "Apply the new background globally from a single shared location (global stylesheet and/or root layout), not via per-page styling changes.",
-    "Replace (do not layer on top of) the existing dual green gradients currently implemented via the `gradient-bg-right` class.",
-    "Keep all existing routes, layouts, and route-transition UX behavior intact."
+    "Keep every other existing feature and behavior intact; changes must be additive and localized to the new Internet Identity login tracking and admin listing functionality.",
+    "Do not edit any files under frontend.immutablePaths (including frontend/src/hooks/useInternetIdentity.ts and frontend/src/hooks/useActor.ts).",
+    "Do not introduce additional backend canisters/services; keep the backend as a single Motoko actor in backend/main.mo.",
+    "Internet Identity does not provide personal details; only principal IDs (and any derived login metadata like timestamps/count) should be stored/shown unless explicitly added later."
   ],
   "nonGoals": [
-    "Do not redesign page layouts, typography, or component structure beyond what is necessary to apply the new global background.",
-    "Do not add any new navigation items or routes as part of this change.",
-    "Do not modify backend canister logic."
+    "Do not add custom registration fields (name/email/profile picture) for Internet Identity users.",
+    "Do not implement third-party authentication providers; Internet Identity only.",
+    "Do not change or redesign the existing plans signup/login system or account tables beyond adding the new Internet Identity login listing section.",
+    "Do not build real-time updates (no websockets/push); the admin list can refresh via normal queries."
   ],
   "imageRequirements": {
-    "required": [
-      "Abstract vector background with prominent flowing geometric layers, green-to-teal gradient (telsfx-abstract-bg.dim_1920x1080.svg)"
-    ],
+    "required": [],
     "edits": []
   },
   "userProfileUpdate": {
     "goalsToAdd": [],
     "goalsToRemove": [],
-    "preferencesToAdd": [],
+    "preferencesToAdd": [
+      "Use English for any user-facing text."
+    ],
     "preferencesToRemove": [],
     "miscToAdd": [],
     "miscToRemove": [],

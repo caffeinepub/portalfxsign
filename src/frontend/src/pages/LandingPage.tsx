@@ -3,15 +3,15 @@ import GreenSectionCard from '../components/GreenSectionCard';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, Users, Shield, ArrowRight } from 'lucide-react';
 import UsersWorldwideKpi from '../components/UsersWorldwideKpi';
+import CardDivider from '../components/CardDivider';
 
 export default function LandingPage() {
   const { startTransition } = useRouteTransition();
 
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-teal-50 to-background dark:from-emerald-950/20 dark:via-teal-950/20 dark:to-background" />
+      {/* Hero Section with subtle light-green gradient background */}
+      <section className="relative py-20 px-4 overflow-hidden bg-gradient-to-b from-emerald-50/40 via-emerald-50/20 to-white dark:from-emerald-950/20 dark:via-emerald-950/10 dark:to-background">
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="text-center mb-12">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
@@ -34,6 +34,10 @@ export default function LandingPage() {
           </div>
 
           <UsersWorldwideKpi />
+          
+          <div className="mt-8 max-w-2xl mx-auto">
+            <CardDivider />
+          </div>
         </div>
       </section>
 
@@ -86,7 +90,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-emerald-50 via-teal-50 to-background dark:from-emerald-950/20 dark:via-teal-950/20 dark:to-background">
+      <section className="py-20 px-4">
         <div className="container mx-auto max-w-4xl text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Get Started?</h2>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">

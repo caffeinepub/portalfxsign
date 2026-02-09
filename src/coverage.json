@@ -1,50 +1,74 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-06T17:58:31.286Z",
+  "generatedAt": "2026-02-09T08:20:33.676Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
+    "total": 4,
     "implemented": 2,
     "items": [
       {
-        "id": "REQ-93",
-        "summary": "Generate a new vector-based abstract background design that transitions from green to teal and is visually pronounced.",
+        "id": "REQ-1",
+        "summary": "Add backend support to record Internet Identity logins by principal ID whenever a user authenticates with Internet Identity.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Add a backend admin-only query endpoint that returns the list of Internet Identity login records (principal IDs and associated timestamps/count), accessible only to the site owner/admin.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Implement a frontend Internet Identity login tracker that calls the backend tracking method once per Internet Identity login session, without modifying any immutable files.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/public/assets/generated/telsfx-abstract-bg.dim_1920x1080.svg"
+          "frontend/src/hooks/useInternetIdentityLoginTracker.ts",
+          "frontend/src/components/InternetIdentityLoginTracker.tsx",
+          "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/public/assets/generated/telsfx-abstract-bg.dim_1920x1080.svg"
+          "frontend/src/hooks/useInternetIdentityLoginTracker.ts",
+          "frontend/src/components/InternetIdentityLoginTracker.tsx",
+          "frontend/src/App.tsx"
         ]
       },
       {
-        "id": "REQ-94",
-        "summary": "Replace the existing global dual-layer green gradient background (currently applied via the `gradient-bg-right` class and its `::before/::after` layers) with the new green-to-teal vector background, and apply it globally across all routes/pages from a single global place (global CSS and/or the root layout container).",
+        "id": "REQ-4",
+        "summary": "Extend the existing owner/admin-only UI to display a table of all Internet Identity principals that have logged in, visible only to the site owner/admin, while keeping existing site behavior intact.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/App.tsx"
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/AdminUsersPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/App.tsx"
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/AdminUsersPage.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/public/assets/generated/telsfx-abstract-bg.dim_1920x1080.png",
-    "frontend/public/assets/generated/telsfx-abstract-bg.dim_1920x1080.svg",
     "frontend/src/App.tsx",
-    "frontend/src/index.css",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/InternetIdentityLoginTracker.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useInternetIdentityLoginTracker.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/AdminUsersPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

@@ -1,4 +1,5 @@
 import GreenSectionCard from '../components/GreenSectionCard';
+import CardDivider from '../components/CardDivider';
 import { Car, Battery, Sun, Zap, Home, Truck } from 'lucide-react';
 
 const products = [
@@ -71,6 +72,7 @@ export default function ProductsPage() {
                     <p className="text-lg text-muted-foreground leading-relaxed mb-6">
                       {product.description}
                     </p>
+                    <CardDivider className="mb-6" />
                     <div className="grid sm:grid-cols-2 gap-3">
                       {product.features.map((feature, idx) => (
                         <div key={idx} className="flex items-center gap-2">

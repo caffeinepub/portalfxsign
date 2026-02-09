@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { Account, UserProfile, UserLoginResponse } from '../backend';
+import type { Account, UserProfile, UserLoginResponse, InternetIdentityLoginInfo } from '../backend';
 import { normalizeBackendError } from '../utils/backendErrorMessage';
 
 // Account creation mutation with health preflight check
@@ -56,18 +56,32 @@ export function useLogin() {
       }
 
       try {
+        // Attempt login
         const result: UserLoginResponse = await actor.login(data.email, data.password);
 
         if (result.__kind__ === 'failure') {
-          // Return the user-friendly error message from backend
+          // Throw the user-friendly error message from backend directly
           throw new Error(result.failure);
         }
 
         // Success case - return planId
         return { planId: result.success };
-      } catch (error) {
-        // Normalize backend/network errors while preserving user-facing messages
-        throw new Error(normalizeBackendError(error));
+      } catch (loginError) {
+        // Catch any transport/replica errors during the login call itself
+        // Check if this is already a business logic error (from the failure branch above)
+        const errorMessage = loginError instanceof Error ? loginError.message : String(loginError);
+        
+        // If it's a known business logic message, preserve it
+        if (
+          errorMessage.includes('Invalid email or password') ||
+          errorMessage.includes('already in use') ||
+          errorMessage.includes('Invalid email')
+        ) {
+          throw loginError;
+        }
+        
+        // Otherwise, normalize transport/replica errors
+        throw new Error(normalizeBackendError(loginError));
       }
     },
   });
@@ -102,6 +116,25 @@ export function useListAllAccounts() {
       if (!actor) throw new Error('Actor not available');
       try {
         return await actor.listAllAccounts();
+      } catch (error) {
+        throw new Error(normalizeBackendError(error));
+      }
+    },
+    enabled: !!actor && !isFetching,
+    retry: false,
+  });
+}
+
+// List Internet Identity logins (admin only)
+export function useListInternetIdentityLogins() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<InternetIdentityLoginInfo[]>({
+    queryKey: ['internetIdentityLogins'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      try {
+        return await actor.listInternetIdentityLogins();
       } catch (error) {
         throw new Error(normalizeBackendError(error));
       }

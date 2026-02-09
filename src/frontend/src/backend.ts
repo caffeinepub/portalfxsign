@@ -104,6 +104,12 @@ export interface Account {
     passwordHash: string;
 }
 export type Time = bigint;
+export interface InternetIdentityLoginInfo {
+    principal: Principal;
+    logins: bigint;
+    firstLogin: Time;
+    lastLogin: Time;
+}
 export type SessionToken = bigint;
 export type AdminLoginResponse = {
     __kind__: "failure";
@@ -136,8 +142,10 @@ export interface backendInterface {
     }>;
     isCallerAdmin(): Promise<boolean>;
     listAllAccounts(): Promise<Array<Account>>;
+    listInternetIdentityLogins(): Promise<Array<InternetIdentityLoginInfo>>;
     login(email: string, password: string): Promise<UserLoginResponse>;
     loginAdmin(email: string, password: string): Promise<AdminLoginResponse>;
+    recordInternetIdentityLogin(): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     validateAdminSession(sessionId: SessionToken): Promise<boolean>;
 }
@@ -289,6 +297,20 @@ export class Backend implements backendInterface {
             return from_candid_vec_n7(this._uploadFile, this._downloadFile, result);
         }
     }
+    async listInternetIdentityLogins(): Promise<Array<InternetIdentityLoginInfo>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.listInternetIdentityLogins();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.listInternetIdentityLogins();
+            return result;
+        }
+    }
     async login(arg0: string, arg1: string): Promise<UserLoginResponse> {
         if (this.processError) {
             try {
@@ -315,6 +337,20 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.loginAdmin(arg0, arg1);
             return from_candid_AdminLoginResponse_n13(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async recordInternetIdentityLogin(): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.recordInternetIdentityLogin();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.recordInternetIdentityLogin();
+            return result;
         }
     }
     async saveCallerUserProfile(arg0: UserProfile): Promise<void> {

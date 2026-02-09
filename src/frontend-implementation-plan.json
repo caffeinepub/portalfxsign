@@ -1,42 +1,55 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Global green-to-teal abstract vector background replacing dual green gradients",
+  "title": "Internet Identity login tracking (frontend) and admin login list UI",
   "requirements": [
     {
-      "id": "REQ-93",
-      "summary": "Add a new original, pronounced green-to-teal abstract vector background SVG asset for global use.",
+      "id": "REQ-3",
+      "summary": "Add a frontend Internet Identity login tracker that records at most once per browser session per principal without touching immutable hooks.",
       "acceptanceCriteria": [
-        "A new vector background asset (SVG) exists under `frontend/public/assets/generated/` and visually transitions from green to teal with prominent abstract shapes.",
-        "The background is original and does not use any third-party branding, logos, or copyrighted artwork."
+        "A new non-immutable component/hook is added that observes the current Internet Identity principal (via existing hooks) and triggers a backend call to record the login when the principal becomes non-anonymous.",
+        "The tracker avoids spamming: for the same principal it records at most once per browser session (e.g., using sessionStorage) unless the user logs out and logs back in.",
+        "The tracker does not block navigation or disrupt existing pages if the tracking call fails (fail silently or show only a console warning).",
+        "No edits are made to any paths listed in frontend.immutablePaths."
       ],
       "file_operations": [
         {
-          "path": "frontend/public/assets/generated/telsfx-abstract-bg.dim_1920x1080.svg",
+          "path": "frontend/src/hooks/useInternetIdentityLoginTracker.ts",
           "operation": "create",
-          "description": "Create the original abstract vector background SVG asset with a pronounced green-to-teal transition and prominent flowing/geometric layers (as specified in imageRequirements). Ensure no third-party branding/logos/copyrighted artwork is included."
-        }
-      ]
-    },
-    {
-      "id": "REQ-94",
-      "summary": "Replace the existing global dual-layer green gradient background with the new SVG background applied globally from a single shared location, without affecting routes or transitions.",
-      "acceptanceCriteria": [
-        "The previous dual-gradient effect is no longer visible anywhere in the app (no remaining `::before/::after` radial gradient layers for `gradient-bg-right`).",
-        "All pages/routes show the new vector green-to-teal background consistently, without per-page modifications.",
-        "Foreground content (header, pages, footer, cards) remains readable and layered above the background (no interference with clicks/scrolling).",
-        "No existing routes, navigation behavior, or route-transition spinner/fade behavior is changed by this background update."
-      ],
-      "file_operations": [
+          "description": "Create a non-immutable hook that uses existing hooks (useInternetIdentity + useActor) to detect when the user becomes authenticated (non-anonymous principal) and call actor.recordInternetIdentityLogin() once per browser session per principal (store a per-principal marker in sessionStorage; clear marker automatically when principal becomes anonymous). On failure, do not throw; only console.warn."
+        },
         {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Remove the existing `.gradient-bg-right` `::before/::after` dual radial gradient definitions (and any related custom properties if unused). Add a single global background class (e.g., `.app-vector-bg`) that applies the new SVG from `frontend/public/assets/generated/telsfx-abstract-bg.dim_1920x1080.svg` as a fixed, non-interactive background layer (pointer-events none) behind all content (safe z-index/positioning) so readability and click/scroll interactions are preserved."
+          "path": "frontend/src/components/InternetIdentityLoginTracker.tsx",
+          "operation": "create",
+          "description": "Create a small non-visual component that mounts globally and invokes useInternetIdentityLoginTracker(), returning null so it does not affect layout or navigation."
         },
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Update the root layout container to stop using `gradient-bg-right` and instead use the new global background class (e.g., `app-vector-bg`) so the SVG background is applied across all routes/pages from one shared place without changing routing or route-transition behavior."
+          "description": "Wire the global InternetIdentityLoginTracker component into the existing app layout (RootLayout) so it runs across all routes without changing current page behavior."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Extend the existing /users admin-only UI to show a table of recorded Internet Identity login principals and metadata.",
+      "acceptanceCriteria": [
+        "The existing protected admin area at /users continues to work as it currently does.",
+        "The /users admin page adds a new section (or a clear toggle) that shows the Internet Identity login list returned by the new backend query.",
+        "The Internet Identity login list displays at least: principal ID, firstSeen, lastSeen, and loginCount, with sensible formatting for timestamps.",
+        "If the viewer is not authorized, the page continues to show an access denied experience and does not reveal principal IDs.",
+        "All user-facing text for the new section is in English."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add a new React Query hook (e.g., useListInternetIdentityLogins) that calls actor.listInternetIdentityLogins() and returns the records. Ensure it is disabled until the actor is available and not fetching, uses retry: false (consistent with existing admin queries), and normalizes errors via normalizeBackendError."
+        },
+        {
+          "path": "frontend/src/pages/AdminUsersPage.tsx",
+          "operation": "modify",
+          "description": "Extend the existing /users admin page by adding a new section below the current accounts table that renders the Internet Identity login records table (principal, firstSeen, lastSeen, loginCount). Use shadcn-ui components (Card/Table/Alert/Button) for consistent styling and layout; verify the component's usage instructions before implementing. Format timestamps from bigint nanoseconds to readable local date/time (consistent with existing account.created formatting). If the query fails (including Unauthorized), show a non-revealing error state within the new section and keep the existing access-denied behavior for non-admin sessions unchanged."
         }
       ]
     }
